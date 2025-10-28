@@ -2222,8 +2222,12 @@
                 const title = work.title || 'Без названия';
                 
                     // Улучшенное извлечение авторов с отладкой
+                console.log('=== ОТЛАДКА АВТОРОВ ===');
                 console.log('Work data for authors:', work);
                 console.log('Authorships:', work.authorships);
+                console.log('Work.authors:', work.authors);
+                console.log('Work.author:', work.author);
+                console.log('All work keys:', Object.keys(work));
                 
                 let authors = 'Авторы не указаны';
                 
@@ -2255,6 +2259,38 @@
                 } else if (work.author) {
                     // Единичный автор
                     authors = work.author.display_name || work.author.name || work.author.title || 'Автор не указан';
+                } else {
+                    // Проверяем другие возможные поля
+                    console.log('Проверяем альтернативные поля для авторов...');
+                    
+                    // Проверяем различные возможные поля
+                    const possibleAuthorFields = [
+                        'creator', 'creators', 'contributor', 'contributors',
+                        'writer', 'writers', 'researcher', 'researchers',
+                        'author_name', 'author_names', 'author_list', 'authors_list'
+                    ];
+                    
+                    for (const field of possibleAuthorFields) {
+                        if (work[field]) {
+                            console.log(`Найдено поле ${field}:`, work[field]);
+                            if (Array.isArray(work[field])) {
+                                const names = work[field].map(item => 
+                                    typeof item === 'string' ? item : 
+                                    item?.name || item?.display_name || item?.title
+                                ).filter(name => name && name.trim() !== '');
+                                
+                                if (names.length > 0) {
+                                    authors = names.join(', ');
+                                    console.log(`Авторы из поля ${field}:`, authors);
+                                    break;
+                                }
+                            } else if (typeof work[field] === 'string') {
+                                authors = work[field];
+                                console.log(`Автор из поля ${field}:`, authors);
+                                break;
+                            }
+                        }
+                    }
                 }
                 
                 console.log('Final authors:', authors);
