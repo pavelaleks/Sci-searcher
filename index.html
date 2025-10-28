@@ -1533,7 +1533,8 @@
                 
                 // Формируем URL для OpenAlex API с запросом полных данных
                 // Используем новую версию данных (data_version=2) для лучшего качества метаданных
-                let url = `https://api.openalex.org/works?search=${encodeURIComponent(keywords)}&per-page=${perPage}&data_version=2`;
+                // Добавляем select для получения полной информации об авторах
+                let url = `https://api.openalex.org/works?search=${encodeURIComponent(keywords)}&per-page=${perPage}&data_version=2&select=id,title,authorships.author.display_name,authorships.author.id,publication_year,primary_location.source.display_name,doi,abstract_inverted_index,abstract,description,summary,biblio.first_page,biblio.last_page,landing_page_url`;
                 
                 // Правильное формирование фильтра по годам для OpenAlex API
                 if (startYear && endYear) {
@@ -1618,7 +1619,7 @@
                             }
                             
                             // Создаем URL без проблемных фильтров
-                            let fallbackUrl = `https://api.openalex.org/works?search=${encodeURIComponent(keywords)}&per-page=${perPage}&sort=${sortParam}&data_version=2`;
+                            let fallbackUrl = `https://api.openalex.org/works?search=${encodeURIComponent(keywords)}&per-page=${perPage}&sort=${sortParam}&data_version=2&select=id,title,authorships.author.display_name,authorships.author.id,publication_year,primary_location.source.display_name,doi,abstract_inverted_index,abstract,description,summary,biblio.first_page,biblio.last_page,landing_page_url`;
                             
                             // Добавляем только безопасные фильтры
                             if (filterType === 'journals') {
@@ -1776,7 +1777,7 @@
                         console.log('Нет результатов с фильтрами, пробуем поиск без фильтров...');
                         
                         // Пробуем поиск без фильтров по годам и языку
-                        const urlWithoutYearFilters = `https://api.openalex.org/works?search=${encodeURIComponent(keywords)}&per-page=${perPage}&sort=publication_date:desc&data_version=2`;
+                        const urlWithoutYearFilters = `https://api.openalex.org/works?search=${encodeURIComponent(keywords)}&per-page=${perPage}&sort=publication_date:desc&data_version=2&select=id,title,authorships.author.display_name,authorships.author.id,publication_year,primary_location.source.display_name,doi,abstract_inverted_index,abstract,description,summary,biblio.first_page,biblio.last_page,landing_page_url`;
                         
                         try {
                             const responseWithoutFilters = await fetch(urlWithoutYearFilters, {
@@ -3001,7 +3002,7 @@
                 
                 try {
                     // Простой запрос без фильтров по годам и с минимальным количеством результатов
-                    const url = `https://api.openalex.org/works?search=${encodeURIComponent(keywords)}&per-page=25&sort=publication_date:desc&data_version=2`;
+                    const url = `https://api.openalex.org/works?search=${encodeURIComponent(keywords)}&per-page=25&sort=publication_date:desc&data_version=2&select=id,title,authorships.author.display_name,authorships.author.id,publication_year,primary_location.source.display_name,doi,abstract_inverted_index,abstract,description,summary,biblio.first_page,biblio.last_page,landing_page_url`;
                     
                     console.log('Альтернативный поиск URL:', url);
                     
