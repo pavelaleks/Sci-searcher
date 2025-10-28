@@ -19,14 +19,14 @@
 
 ## Использование
 
-1. Откройте `sci-searcher.html` в браузере
+1. Откройте сайт в браузере по ссылке ниже
 2. Введите поисковый запрос
 3. Выберите базу данных для поиска
 4. Нажмите "Найти"
 
 ## GitHub Pages
 
-Сайт доступен по адресу: [https://yourusername.github.io/Sci-searcher/](https://yourusername.github.io/Sci-searcher/)
+Сайт доступен по адресу: [https://pavelaleks.github.io/Sci-searcher/](https://pavelaleks.github.io/Sci-searcher/)
 
 ## Лицензия
 
