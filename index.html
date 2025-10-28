@@ -85,23 +85,11 @@
         }
 
         .version-info {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            padding: 4px 8px;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
             font-weight: 500;
-            z-index: 1000;
-        }
-
-        [data-theme="dark"] .version-info {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 8px;
+            opacity: 0.7;
         }
 
         .theme-toggle {
@@ -1213,7 +1201,6 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="version-info" id="versionInfo">v1.0.0</div>
             <button class="theme-toggle" id="themeToggle" title="Переключить тему">
                 <svg viewBox="0 0 24 24">
                     <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/>
@@ -1386,6 +1373,7 @@
     <footer class="footer">
         <div class="footer-content">
             <p>&copy; 2025 Разработка П.В. Алексеев, Горно-Алтайский государственный университет</p>
+            <p class="version-info" id="versionInfo">v1.0.0</p>
         </div>
     </footer>
 
@@ -1750,16 +1738,65 @@
                                 
                                 return results;
                             } else {
-                                throw new Error('Доступ к OpenAlex API временно ограничен. Возможные причины:\n\n' +
-                                    '• Слишком много запросов с вашего IP-адреса\n' +
-                                    '• Временные ограничения API\n' +
-                                    '• Проблемы с сетью\n\n' +
-                                    'Попробуйте:\n' +
-                                    '• Подождать 5-10 минут и повторить запрос\n' +
-                                    '• Использовать VPN или другой интернет\n' +
-                                    '• Обратиться к разработчику: pavel.alekseev.gasu@gmail.com');
+                                // Более мягкая обработка ошибки 403 - пробуем альтернативные методы
+                                console.warn('OpenAlex API ограничен (403), пробуем альтернативные методы...');
+                                
+                                // Пробуем запрос без некоторых параметров
+                                const simplifiedUrl = `https://api.openalex.org/works?search=${encodeURIComponent(keywords)}&per-page=10&data_version=2`;
+                                
+                                try {
+                                    const simplifiedResponse = await fetch(simplifiedUrl, {
+                                        method: 'GET',
+                                        headers: {
+                                            'Accept': 'application/json',
+                                            'User-Agent': 'Sci-Searcher/1.0 (Educational Research Tool)'
+                                        }
+                                    });
+                                    
+                                    if (simplifiedResponse.ok) {
+                                        const simplifiedData = await simplifiedResponse.json();
+                                        console.log('Упрощенный запрос успешен, получено результатов:', simplifiedData.results?.length || 0);
+                                        return simplifiedData.results || [];
+                                    }
+                                } catch (simplifiedError) {
+                                    console.warn('Упрощенный запрос также не удался:', simplifiedError);
+                                }
+                                
+                                // Если все методы не работают, показываем дружелюбное сообщение
+                                throw new Error('OpenAlex API временно недоступен. Это может быть связано с:\n\n' +
+                                    '• Временными ограничениями сервиса\n' +
+                                    '• Высокой нагрузкой на сервер\n' +
+                                    '• Техническими работами\n\n' +
+                                    'Рекомендации:\n' +
+                                    '• Попробуйте через несколько минут\n' +
+                                    '• Упростите поисковый запрос\n' +
+                                    '• Проверьте интернет-соединение');
                             }
                         } else if (response.status === 429) {
+                            // Более мягкая обработка ошибки 429
+                            console.warn('Превышен лимит запросов (429), пробуем упрощенный запрос...');
+                            
+                            // Пробуем запрос с меньшим количеством результатов
+                            const limitedUrl = `https://api.openalex.org/works?search=${encodeURIComponent(keywords)}&per-page=5&data_version=2`;
+                            
+                            try {
+                                const limitedResponse = await fetch(limitedUrl, {
+                                    method: 'GET',
+                                    headers: {
+                                        'Accept': 'application/json',
+                                        'User-Agent': 'Sci-Searcher/1.0 (Educational Research Tool)'
+                                    }
+                                });
+                                
+                                if (limitedResponse.ok) {
+                                    const limitedData = await limitedResponse.json();
+                                    console.log('Ограниченный запрос успешен, получено результатов:', limitedData.results?.length || 0);
+                                    return limitedData.results || [];
+                                }
+                            } catch (limitedError) {
+                                console.warn('Ограниченный запрос также не удался:', limitedError);
+                            }
+                            
                             throw new Error('Превышен лимит запросов к OpenAlex API. Пожалуйста, подождите 5-10 минут и повторите запрос.');
                         } else if (response.status === 400) {
                             // Ошибка 400 без фильтров по годам
