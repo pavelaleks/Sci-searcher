@@ -2221,8 +2221,43 @@
                 
                 const title = work.title || 'Без названия';
                 
-                    // OpenAlex данные с проверкой на null/undefined
-                const authors = work.authorships?.map(a => a?.author?.display_name).filter(name => name && name.trim() !== '').join(', ') || 'Авторы не указаны';
+                    // Улучшенное извлечение авторов с отладкой
+                console.log('Work data for authors:', work);
+                console.log('Authorships:', work.authorships);
+                
+                let authors = 'Авторы не указаны';
+                
+                if (work.authorships && work.authorships.length > 0) {
+                    const authorNames = work.authorships
+                        .map(authorship => {
+                            console.log('Authorship:', authorship);
+                            return authorship?.author?.display_name || 
+                                   authorship?.author?.name ||
+                                   authorship?.author?.title ||
+                                   authorship?.display_name;
+                        })
+                        .filter(name => name && name.trim() !== '');
+                    
+                    console.log('Extracted author names:', authorNames);
+                    
+                    if (authorNames.length > 0) {
+                        authors = authorNames.join(', ');
+                    }
+                } else if (work.authors && work.authors.length > 0) {
+                    // Альтернативный формат авторов
+                    const authorNames = work.authors
+                        .map(author => author?.display_name || author?.name || author?.title)
+                        .filter(name => name && name.trim() !== '');
+                    
+                    if (authorNames.length > 0) {
+                        authors = authorNames.join(', ');
+                    }
+                } else if (work.author) {
+                    // Единичный автор
+                    authors = work.author.display_name || work.author.name || work.author.title || 'Автор не указан';
+                }
+                
+                console.log('Final authors:', authors);
                 const journal = work.primary_location?.source?.display_name || 'Журнал не указан';
                 const year = work.publication_year || 'Год не указан';
                     
@@ -2526,7 +2561,33 @@
 
                 resultsToFormat.forEach((work, index) => {
                     const title = work.title || 'Без названия';
-                    const authors = work.authorships?.map(a => a?.author?.display_name).filter(name => name && name.trim() !== '').join(', ') || 'Авторы не указаны';
+                    
+                    // Улучшенное извлечение авторов для экспорта
+                    let authors = 'Авторы не указаны';
+                    
+                    if (work.authorships && work.authorships.length > 0) {
+                        const authorNames = work.authorships
+                            .map(authorship => authorship?.author?.display_name || 
+                                               authorship?.author?.name ||
+                                               authorship?.author?.title ||
+                                               authorship?.display_name)
+                            .filter(name => name && name.trim() !== '');
+                        
+                        if (authorNames.length > 0) {
+                            authors = authorNames.join(', ');
+                        }
+                    } else if (work.authors && work.authors.length > 0) {
+                        const authorNames = work.authors
+                            .map(author => author?.display_name || author?.name || author?.title)
+                            .filter(name => name && name.trim() !== '');
+                        
+                        if (authorNames.length > 0) {
+                            authors = authorNames.join(', ');
+                        }
+                    } else if (work.author) {
+                        authors = work.author.display_name || work.author.name || work.author.title || 'Автор не указан';
+                    }
+                    
                     const journal = work.primary_location?.source?.display_name || 'Журнал не указан';
                     const year = work.publication_year || 'Год не указан';
                     const doi = work.doi || work.id;
@@ -2584,10 +2645,43 @@
                     const authors = work.authorships || [];
                     
                     if (authors.length === 0) {
-                        authorString = 'Anonymous';
+                        // Попробуем альтернативные источники авторов
+                        if (work.authors && work.authors.length > 0) {
+                            const validAuthors = work.authors
+                                .map(author => author?.display_name || author?.name || author?.title)
+                                .filter(name => name && name.trim() !== '');
+                            
+                            if (validAuthors.length > 0) {
+                                if (validAuthors.length === 1) {
+                                    const name = validAuthors[0];
+                                    const lastName = name.split(',')[0] || name.split(' ').pop();
+                                    const firstName = name.split(',')[1]?.trim() || name.split(' ')[0];
+                                    authorString = `${lastName}, ${firstName.charAt(0).toUpperCase()}.`;
+                                } else if (validAuthors.length <= 7) {
+                                    const formattedAuthors = validAuthors.map(name => {
+                                        const lastName = name.split(',')[0] || name.split(' ').pop();
+                                        const firstName = name.split(',')[1]?.trim() || name.split(' ')[0];
+                                        return `${lastName}, ${firstName.charAt(0).toUpperCase()}.`;
+                                    });
+                                    authorString = formattedAuthors.join(', ');
+                                } else {
+                                    const firstAuthor = validAuthors[0];
+                                    const lastName = firstAuthor.split(',')[0] || firstAuthor.split(' ').pop();
+                                    const firstName = firstAuthor.split(',')[1]?.trim() || firstAuthor.split(' ')[0];
+                                    authorString = `${lastName}, ${firstName.charAt(0).toUpperCase()}., et al.`;
+                                }
+                            } else {
+                                authorString = 'Anonymous';
+                            }
+                        } else {
+                            authorString = 'Anonymous';
+                        }
                     } else {
                         const validAuthors = authors
-                            .map(authorship => authorship?.author?.display_name)
+                            .map(authorship => authorship?.author?.display_name || 
+                                               authorship?.author?.name ||
+                                               authorship?.author?.title ||
+                                               authorship?.display_name)
                             .filter(name => name && name.trim() !== '');
                         
                         if (validAuthors.length === 0) {
