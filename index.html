@@ -3,3376 +3,732 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sci-Searcher | Поисковик научной литературы</title>
+    <title>Студия "Лексикон" - Подготовка к ОГЭ и ЕГЭ</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        :root {
-            /* Light theme colors */
-            --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --bg-secondary: #ffffff;
-            --text-primary: #2c3e50;
-            --text-secondary: #7f8c8d;
-            --accent-primary: #3498db;
-            --accent-secondary: #e74c3c;
-            --success: #2ecc71;
-            --warning: #f39c12;
-            --border-color: #e1e5e9;
-            --shadow: 0 4px 12px rgba(0,0,0,0.15);
-            --shadow-hover: 0 8px 25px rgba(0,0,0,0.2);
-        }
-        
-        [data-theme="dark"] {
-            /* Dark theme colors */
-            --bg-primary: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            --bg-secondary: #2c3e50;
-            --text-primary: #ecf0f1;
-            --text-secondary: #bdc3c7;
-            --accent-primary: #3498db;
-            --accent-secondary: #e74c3c;
-            --success: #27ae60;
-            --warning: #f39c12;
-            --border-color: #34495e;
-            --shadow: 0 4px 12px rgba(0,0,0,0.3);
-            --shadow-hover: 0 8px 25px rgba(0,0,0,0.4);
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --light-bg: #ecf0f1;
+            --dark-text: #2c3e50;
+            --light-text: #7f8c8d;
+            --border-color: #bdc3c7;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            color: var(--text-primary);
-            transition: all 0.3s ease;
+            color: var(--dark-text);
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            min-height: 100vh;
         }
 
         .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
             text-align: center;
-            margin-bottom: 20px;
-            color: white;
-            padding: 20px;
-            position: relative;
         }
 
         .header h1 {
-            font-size: 2.2rem;
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
             font-weight: 700;
-            margin-bottom: 8px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            letter-spacing: -0.02em;
         }
 
         .header p {
-            font-size: 1rem;
-            opacity: 0.9;
-            margin: 0;
-            font-weight: 400;
+            color: var(--light-text);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
         }
 
-        .version-info {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-            margin-top: 8px;
-            opacity: 0.7;
-        }
-
-        .theme-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .auth-section {
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-        }
-
-        .theme-toggle:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.05);
-        }
-
-        .theme-toggle svg {
-            width: 20px;
-            height: 20px;
-            fill: white;
-        }
-
-        .developer-info {
-            margin: 20px 0;
-            padding: 16px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .developer-info p {
-            margin: 6px 0;
-            font-size: 0.9rem;
-            opacity: 0.9;
-            font-weight: 400;
-        }
-
-        .developer-info a {
-            color: #fff;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .developer-info a:hover {
-            color: #f0f0f0;
-            text-decoration: underline;
-        }
-
-        .app-description {
-            margin: 20px 0;
-            padding: 16px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .app-description p {
-            margin: 0;
-            font-size: 0.9rem;
-            opacity: 0.9;
-            line-height: 1.5;
-            font-weight: 400;
-        }
-
-        .search-panel {
-            background: var(--bg-secondary);
-            border-radius: 16px;
-            padding: 24px;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
             box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-            width: 100%;
-            box-sizing: border-box;
-            margin-bottom: 20px;
         }
 
-        .main-search-section {
+        .auth-tabs {
             display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--border-color);
         }
 
-        .search-input-group {
-            display: flex;
-            gap: 12px;
-            align-items: end;
-        }
-
-        .search-input {
+        .auth-tab {
             flex: 1;
-            padding: 16px 20px;
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-            transform: translateY(-1px);
-        }
-
-        .search-btn-main {
-            background: linear-gradient(135deg, var(--accent-primary) 0%, #2980b9 100%);
-            color: white;
+            padding: 15px 20px;
+            background: none;
             border: none;
-            padding: 16px 32px;
-            border-radius: 12px;
             font-size: 1.1rem;
             font-weight: 600;
+            color: var(--light-text);
             cursor: pointer;
             transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-family: 'Inter', sans-serif;
-            min-width: 160px;
+            border-bottom: 3px solid transparent;
         }
 
-        .search-btn-main:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-hover);
+        .auth-tab.active {
+            color: var(--secondary-color);
+            border-bottom-color: var(--secondary-color);
         }
 
-        .quick-filters {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
+        .auth-tab:hover {
+            color: var(--secondary-color);
         }
 
-        .quick-filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .quick-filter-group label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-
-        .quick-filter-group select {
-            padding: 8px 12px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 0.9rem;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            min-width: 120px;
-        }
-
-        .advanced-search-toggle {
-            background: transparent;
-            border: 2px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .advanced-search-toggle:hover {
-            border-color: var(--accent-primary);
-            color: var(--accent-primary);
-        }
-
-        .advanced-search-panel {
+        .auth-form {
             display: none;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 16px;
         }
 
-        .advanced-search-panel.active {
+        .auth-form.active {
             display: block;
-        }
-
-        .advanced-filters-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-        }
-
-        .search-panel:hover {
-            box-shadow: var(--shadow-hover);
-            transform: translateY(-2px);
-        }
-
-        .search-form {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            align-items: start;
-            max-width: 100%;
-        }
-
-        .form-row-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px;
-            align-items: stretch;
-            max-width: 100%;
         }
 
         .form-group {
-            display: flex;
-            flex-direction: column;
-            height: 72px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: var(--text-primary);
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            line-height: 1.2;
-            flex-shrink: 0;
-        }
-
-        .form-group input, .form-group select {
-            padding: 10px 12px;
-            border: 2px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            height: 42px;
-            box-sizing: border-box;
-            flex-shrink: 0;
-            margin-top: auto;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-            background: var(--bg-secondary);
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
-            transform: translateY(-1px);
-        }
-
-        .form-group small {
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-            margin-top: 3px;
-            line-height: 1.3;
-        }
-
-        .search-btn {
-            background: linear-gradient(135deg, var(--accent-primary) 0%, #2980b9 100%);
-            color: white;
-            border: none;
-            padding: 16px 24px;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-family: 'Inter', sans-serif;
-            position: relative;
-            overflow: hidden;
-            width: 100%;
-            margin-top: 8px;
-        }
-
-        .search-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .search-btn:hover::before {
-            left: 100%;
-        }
-
-        .search-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
-        }
-
-        .search-btn:active {
-            transform: translateY(0);
-        }
-
-        .search-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .results-panel {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            display: none;
-            height: fit-content;
-        }
-
-        .results-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .results-count {
-            font-size: 0.9rem;
-            color: #666;
-            font-weight: 500;
-        }
-
-        .export-buttons {
-            display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
-        }
-
-        .export-btn {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 6px 10px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 3px;
-        }
-
-        .export-btn:hover {
-            background: #218838;
-            transform: translateY(-1px);
-        }
-
-        .copy-btn {
-            background: #17a2b8;
-        }
-
-        .copy-btn:hover {
-            background: #138496;
-        }
-
-        .results-list {
-            max-height: calc(100vh - 200px);
-            overflow-y: auto;
-        }
-
-        .result-item {
-            border: 1px solid #e1e5e9;
-            border-radius: 6px;
-            padding: 12px;
+            display: block;
             margin-bottom: 8px;
-            transition: all 0.2s ease;
-            background: #fafbfc;
+            font-weight: 600;
+            color: var(--dark-text);
         }
 
-        .result-item:hover {
-            border-color: #667eea;
-            box-shadow: 0 3px 8px rgba(102, 126, 234, 0.1);
-            transform: translateY(-1px);
-        }
-
-        .result-title {
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
             font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1rem;
             font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 6px;
-            line-height: 1.3;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
         }
 
-        .result-authors {
-            color: #666;
-            margin-bottom: 6px;
-            font-size: 0.85rem;
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
         }
 
-        .result-journal {
-            color: #8e44ad;
-            font-weight: 500;
-            margin-bottom: 6px;
-            font-size: 0.8rem;
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color), #229954);
         }
 
-        .result-year {
-            color: #e74c3c;
-            font-weight: 600;
-            margin-bottom: 6px;
-            font-size: 0.8rem;
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning-color), #e67e22);
         }
 
-        .result-abstract {
-            color: #555;
-            line-height: 1.4;
-            font-size: 0.8rem;
-            margin-bottom: 6px;
+        .dashboard {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--shadow);
         }
 
-        /* Стили для HTML-элементов в аннотациях */
-        .result-abstract p {
-            margin: 0 0 8px 0;
-        }
-
-        .result-abstract p:last-child {
-            margin-bottom: 0;
-        }
-
-        .result-abstract em,
-        .result-abstract i {
-            font-style: italic;
-        }
-
-        .result-abstract strong,
-        .result-abstract b {
-            font-weight: bold;
-        }
-
-        .result-abstract span {
-            display: inline;
-        }
-
-        .result-abstract div {
+        .dashboard.active {
             display: block;
         }
 
-        .result-abstract br {
-            line-height: 1.2;
-        }
-
-        .abstract-preview {
-            max-height: 60px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .abstract-preview::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 20px;
-            background: linear-gradient(transparent, #fafbfc);
-        }
-
-        .abstract-full {
-            max-height: none;
-        }
-
-        .toggle-abstract {
-            background: none;
-            border: none;
-            color: #667eea;
-            font-size: 0.75rem;
-            cursor: pointer;
-            padding: 2px 0;
-            margin-top: 4px;
-            text-decoration: underline;
-        }
-
-        .toggle-abstract:hover {
-            color: #5a6fd8;
-        }
-
-        .result-checkbox {
-            margin-right: 8px;
-            transform: scale(0.9);
-        }
-
-        .result-item.selected {
-            border-color: #667eea;
-            background: #f0f4ff;
-        }
-
-        .selection-controls {
+        .user-info {
             display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
-            padding: 8px;
-            background: #f8f9fa;
-            border-radius: 4px;
+            justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .select-all-btn, .clear-selection-btn {
-            background: #6c757d;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
             color: white;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 3px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            border-radius: 10px;
         }
 
-        .select-all-btn:hover, .clear-selection-btn:hover {
-            background: #5a6268;
+        .user-info h2 {
+            font-size: 1.5rem;
         }
 
-        .selected-count {
-            font-size: 0.8rem;
-            color: #666;
-            font-weight: 500;
-        }
-
-        .selection-controls .export-btn {
-            background: #28a745;
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
             color: white;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 3px;
-            font-size: 0.75rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 2px;
-        }
-
-        .selection-controls .export-btn:hover {
-            background: #218838;
-            transform: translateY(-1px);
-        }
-
-        .result-doi {
-            color: #3498db;
-            font-size: 0.75rem;
-            text-decoration: none;
-        }
-
-        .result-doi:hover {
-            text-decoration: underline;
-        }
-
-        .result-link {
-            color: #3498db;
-            font-size: 0.85rem;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 8px;
-            padding: 5px 10px;
-            background: #e3f2fd;
-            border-radius: 5px;
             transition: all 0.3s ease;
         }
 
-        .result-link:hover {
-            background: #bbdefb;
-            text-decoration: none;
-            transform: translateY(-1px);
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
-        .footer {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
             text-align: center;
-            padding: 15px 20px;
-            margin-top: 20px;
-            border-radius: 8px 8px 0 0;
+            transition: all 0.3s ease;
         }
 
-        .footer-content p {
-            margin: 0;
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .stat-card i {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            color: var(--light-text);
+            font-size: 1rem;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .module-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .module-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .module-card p {
+            color: var(--light-text);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .module-progress {
+            background: var(--light-bg);
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .module-progress-bar {
+            background: linear-gradient(135deg, var(--success-color), #229954);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .module-stats {
+            display: flex;
+            justify-content: space-between;
             font-size: 0.9rem;
-            opacity: 0.9;
-            font-weight: 400;
+            color: var(--light-text);
         }
 
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
+        .admin-panel {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-top: 20px;
         }
 
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+        .admin-panel.active {
+            display: block;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
+        .admin-toggle {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
             border-radius: 8px;
-            margin: 20px 0;
-            border: 1px solid #f5c6cb;
+            cursor: pointer;
+            margin-bottom: 20px;
         }
 
-        .no-results {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-            font-size: 1.1rem;
-        }
-
-        @media (max-width: 1200px) {
-            .container {
-                padding: 15px;
-                gap: 15px;
-            }
+        .hidden {
+            display: none !important;
         }
 
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
-                gap: 15px;
             }
             
             .header h1 {
-                font-size: 1.5rem;
+                font-size: 2rem;
             }
             
-            .search-input-group {
+            .user-info {
                 flex-direction: column;
-                gap: 12px;
+                gap: 15px;
+                text-align: center;
             }
             
-            .search-input {
-                font-size: 1rem;
-                padding: 14px 16px;
-            }
-            
-            .search-btn-main {
-                width: 100%;
-                padding: 14px 20px;
-                font-size: 1rem;
-            }
-            
-            .quick-filters {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 12px;
-            }
-            
-            .quick-filter-group select {
-                width: 100%;
-            }
-            
-            .advanced-filters-grid {
+            .stats-grid {
                 grid-template-columns: 1fr;
-                gap: 12px;
             }
             
-            .results-panel {
-                padding: 15px;
-            }
-            
-            .result-item {
-                padding: 12px;
-            }
-            
-            .result-title {
-                font-size: 1rem;
-            }
-            
-            .result-authors {
-                font-size: 0.8rem;
-            }
-            
-            .result-journal {
-                font-size: 0.8rem;
-            }
-            
-            .export-buttons {
-                flex-direction: column;
-                gap: 8px;
-            }
-            
-            .export-btn {
-                padding: 8px 12px;
-                font-size: 0.8rem;
-            }
-            
-            .selection-controls {
-                flex-direction: column;
-                gap: 8px;
-            }
-            
-            .select-all-btn, .clear-selection-btn {
-                padding: 8px 12px;
-                font-size: 0.8rem;
-            }
-            
-            .analytics-grid {
+            .modules-grid {
                 grid-template-columns: 1fr;
-                gap: 12px;
-            }
-            
-            .footer {
-                padding: 10px 15px;
-                margin-top: 15px;
-            }
-            
-            .footer-content p {
-                font-size: 0.8rem;
             }
         }
-
-        .hidden {
-            display: none;
-        }
-
-        .analytics-panel {
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-        }
-
-        .analytics-panel h3 {
-            color: var(--text-primary);
-            margin-bottom: 16px;
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .analytics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 16px;
-        }
-
-        .analytics-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 16px;
-            transition: all 0.3s ease;
-        }
-
-        .analytics-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .analytics-title {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .analytics-content {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-
-        .analytics-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 4px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .analytics-item:last-child {
-            border-bottom: none;
-        }
-
-        .analytics-bar {
-            width: 100%;
-            height: 6px;
-            background: var(--border-color);
-            border-radius: 3px;
-            overflow: hidden;
-            margin-top: 4px;
-        }
-
-        .analytics-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent-primary), var(--success));
-            transition: width 0.3s ease;
-        }
-
-        .tabs {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 5px;
-            backdrop-filter: blur(10px);
-        }
-
-        .tab-btn {
-            background: transparent;
-            border: none;
-            color: white;
-            padding: 12px 30px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            font-weight: 500;
-        }
-
-        .tab-btn.active {
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .tab-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .search-type {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .search-type label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        .search-type input[type="radio"] {
-            margin: 0;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .current-year-btn {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .current-year-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
-        }
-
-        .current-year-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .quick-periods {
-            margin: 20px 0;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid #e9ecef;
-        }
-
-        .period-buttons {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .period-btn {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .period-btn:hover {
-            background: #5a6268;
-            transform: translateY(-1px);
-        }
-
-        .period-btn.active {
-            background: #007bff;
-            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
-        }
-
-
-
-
-        .results-panel {
-            background: var(--bg-secondary);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-            display: none;
-            margin-top: 20px;
-        }
-
-        .results-panel.active {
-            display: block;
-        }
-
-        .results-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .export-buttons {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .export-btn {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .export-btn:hover {
-            background: #218838;
-            transform: translateY(-1px);
-        }
-
-        .copy-btn {
-            background: #17a2b8;
-        }
-
-        .copy-btn:hover {
-            background: #138496;
-        }
-
-        .results-list {
-            max-height: 70vh;
-            overflow-y: auto;
-        }
-
-        .result-item {
-            border: 1px solid #e1e5e9;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-            background: #fafbfc;
-        }
-
-        .result-item:hover {
-            border-color: #667eea;
-            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.1);
-            transform: translateY(-1px);
-        }
-
-        .result-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 8px;
-            line-height: 1.3;
-        }
-
-        .result-authors {
-            color: #666;
-            margin-bottom: 6px;
-            font-size: 0.9rem;
-        }
-
-        .result-journal {
-            color: #8e44ad;
-            font-weight: 500;
-            margin-bottom: 6px;
-            font-size: 0.85rem;
-        }
-
-        .result-year {
-            color: #e74c3c;
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 0.85rem;
-        }
-
-        .result-abstract {
-            color: #555;
-            line-height: 1.5;
-            font-size: 0.85rem;
-            margin-bottom: 8px;
-        }
-
-        .result-doi {
-            color: #3498db;
-            font-size: 0.8rem;
-            text-decoration: none;
-        }
-
-        .result-doi:hover {
-            text-decoration: underline;
-        }
-
-        .result-link {
-            color: #3498db;
-            font-size: 0.8rem;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 6px;
-            padding: 4px 8px;
-            background: #e3f2fd;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-        }
-
-        .result-link:hover {
-            background: #bbdefb;
-            text-decoration: none;
-            transform: translateY(-1px);
-        }
-
-
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Заголовок -->
         <div class="header">
-            <button class="theme-toggle" id="themeToggle" title="Переключить тему">
-                <svg viewBox="0 0 24 24">
-                    <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/>
-                </svg>
+            <h1><i class="fas fa-graduation-cap"></i> Студия "Лексикон"</h1>
+            <p>Подготовка к ОГЭ и ЕГЭ по русскому языку</p>
+        </div>
+
+        <!-- Секция авторизации -->
+        <div class="auth-section" id="authSection">
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuthTab('login')">
+                    <i class="fas fa-sign-in-alt"></i> Вход
+                </button>
+                <button class="auth-tab" onclick="switchAuthTab('register')">
+                    <i class="fas fa-user-plus"></i> Регистрация
+                </button>
+            </div>
+
+            <!-- Форма входа -->
+            <div class="auth-form active" id="loginForm">
+                <form onsubmit="login(event)">
+                    <div class="form-group">
+                        <label for="loginEmail">Email:</label>
+                        <input type="email" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Пароль:</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn">Войти</button>
+                </form>
+            </div>
+
+            <!-- Форма регистрации -->
+            <div class="auth-form" id="registerForm">
+                <form onsubmit="register(event)">
+                    <div class="form-group">
+                        <label for="regName">Имя:</label>
+                        <input type="text" id="regName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regEmail">Email:</label>
+                        <input type="email" id="regEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regPassword">Пароль:</label>
+                        <input type="password" id="regPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regClass">Класс:</label>
+                        <input type="text" id="regClass" placeholder="9А, 11Б и т.д." required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Зарегистрироваться</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Панель управления -->
+        <div class="dashboard" id="dashboard">
+            <div class="user-info">
+                <div>
+                    <h2 id="userName">Добро пожаловать!</h2>
+                    <p id="userClass">Класс: -</p>
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Выйти
+                </button>
+            </div>
+
+            <!-- Статистика -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-tasks"></i>
+                    <h3 id="totalTasks">0</h3>
+                    <p>Всего заданий</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-check-circle"></i>
+                    <h3 id="completedTasks">0</h3>
+                    <p>Выполнено</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-percentage"></i>
+                    <h3 id="successRate">0%</h3>
+                    <p>Успешность</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-trophy"></i>
+                    <h3 id="currentLevel">Новичок</h3>
+                    <p>Уровень</p>
+                </div>
+            </div>
+
+            <!-- Модули обучения -->
+            <div class="modules-grid">
+                <div class="module-card" onclick="openModule('orthography')">
+                    <h3><i class="fas fa-spell-check"></i> Орфография</h3>
+                    <p>Изучение правил написания слов, корней, приставок и суффиксов</p>
+                    <div class="module-progress">
+                        <div class="module-progress-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="module-stats">
+                        <span>0/15 заданий</span>
+                        <span>0% выполнено</span>
+                    </div>
+                </div>
+
+                <div class="module-card" onclick="openModule('punctuation')">
+                    <h3><i class="fas fa-quote-left"></i> Пунктуация</h3>
+                    <p>Правила расстановки знаков препинания в предложениях</p>
+                    <div class="module-progress">
+                        <div class="module-progress-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="module-stats">
+                        <span>0/12 заданий</span>
+                        <span>0% выполнено</span>
+                    </div>
+                </div>
+
+                <div class="module-card" onclick="openModule('grammar')">
+                    <h3><i class="fas fa-language"></i> Грамматика</h3>
+                    <p>Строение слов, частей речи и синтаксические конструкции</p>
+                    <div class="module-progress">
+                        <div class="module-progress-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="module-stats">
+                        <span>0/18 заданий</span>
+                        <span>0% выполнено</span>
+                    </div>
+                </div>
+
+                <div class="module-card" onclick="openModule('composition')">
+                    <h3><i class="fas fa-edit"></i> Сочинение</h3>
+                    <p>Написание сочинений-рассуждений и эссе</p>
+                    <div class="module-progress">
+                        <div class="module-progress-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="module-stats">
+                        <span>0/8 заданий</span>
+                        <span>0% выполнено</span>
+                    </div>
+                </div>
+
+                <div class="module-card" onclick="openModule('reading')">
+                    <h3><i class="fas fa-book-open"></i> Чтение</h3>
+                    <p>Анализ текстов и понимание прочитанного</p>
+                    <div class="module-progress">
+                        <div class="module-progress-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="module-stats">
+                        <span>0/10 заданий</span>
+                        <span>0% выполнено</span>
+                    </div>
+                </div>
+
+                <div class="module-card" onclick="openModule('exam')">
+                    <h3><i class="fas fa-clipboard-check"></i> Пробные тесты</h3>
+                    <p>Полные пробные варианты ОГЭ и ЕГЭ</p>
+                    <div class="module-progress">
+                        <div class="module-progress-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="module-stats">
+                        <span>0/5 тестов</span>
+                        <span>0% выполнено</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Кнопка админ-панели -->
+            <button class="admin-toggle" onclick="toggleAdminPanel()">
+                <i class="fas fa-cog"></i> Админ-панель
             </button>
-            <h1>Sci-Searcher</h1>
-            <p>Автономный поисковик научной литературы</p>
         </div>
 
-        <!-- Основная поисковая панель -->
-        <div class="search-panel">
-            <form class="search-form" id="openalexForm">
-                <div class="main-search-section">
-                    <div class="search-input-group">
-                        <input type="text" id="keywords" class="search-input" placeholder="Введите ключевые слова для поиска..." required>
-                        <button type="submit" class="search-btn-main" id="openalexSearchBtn">
-                            🔍 Поиск
-                        </button>
-                    </div>
-                    
-                    <div class="quick-filters">
-                        <div class="quick-filter-group">
-                            <label for="searchMode">Режим</label>
-                            <select id="searchMode">
-                                <option value="simple">Простой</option>
-                                <option value="advanced">Расширенный</option>
-                                <option value="exact">Точная фраза</option>
-                            </select>
-                        </div>
-                        
-                        <div class="quick-filter-group">
-                            <label for="resultsLimit">Результатов</label>
-                            <select id="resultsLimit">
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                                <option value="200">200</option>
-                                <option value="300">300</option>
-                                <option value="500">500</option>
-                            </select>
-                        </div>
-                        
-                        <div class="quick-filter-group">
-                            <label for="startYear">Год от</label>
-                            <input type="number" id="startYear" min="1700" placeholder="2019" style="padding: 8px 12px; border: 2px solid var(--border-color); border-radius: 8px; font-size: 0.9rem; background: var(--bg-secondary); color: var(--text-primary); font-family: 'Inter', sans-serif; min-width: 120px;">
-                        </div>
-                        
-                        <div class="quick-filter-group">
-                            <label for="endYear">Год до</label>
-                            <input type="number" id="endYear" min="1700" placeholder="2025" style="padding: 8px 12px; border: 2px solid var(--border-color); border-radius: 8px; font-size: 0.9rem; background: var(--bg-secondary); color: var(--text-primary); font-family: 'Inter', sans-serif; min-width: 120px;">
-                        </div>
-                        
-                        <div class="year-range-info" style="font-size: 0.8rem; color: #666; margin-top: 5px; text-align: center;">
-                            📅 По умолчанию: последние 6 лет | Диапазон: от 1700 года до <span id="currentYearDisplay">2025</span> года и далее
-                        </div>
-                        
-                        <button type="button" class="advanced-search-toggle" id="advancedToggle">
-                            ⚙️ Расширенные фильтры
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="advanced-search-panel" id="advancedPanel">
-                    <div class="advanced-filters-grid">
-                        <div class="form-group">
-                            <label for="filterType">Тип публикаций</label>
-                            <select id="filterType">
-                                <option value="all">Все публикации</option>
-                                <option value="journals">Только журнальные статьи</option>
-                                <option value="conferences">Конференции</option>
-                                <option value="books">Книги и главы</option>
-                                <option value="no_repositories">Исключить репозитории</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="language">Язык публикации</label>
-                            <select id="language">
-                                <option value="all">Все языки</option>
-                                <option value="ru">Русский</option>
-                                <option value="kk">Казахский</option>
-                                <option value="en">Английский</option>
-                                <option value="de">Немецкий</option>
-                                <option value="fr">Французский</option>
-                                <option value="es">Испанский</option>
-                                <option value="zh-cn">Китайский (упрощенный)</option>
-                                <option value="zh-tw">Китайский (традиционный)</option>
-                                <option value="ja">Японский</option>
-                                <option value="ko">Корейский</option>
-                                <option value="ar">Арабский</option>
-                                <option value="pt">Португальский</option>
-                                <option value="it">Итальянский</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="openAccess">Открытый доступ</label>
-                            <select id="openAccess">
-                                <option value="all">Все публикации</option>
-                                <option value="open">Только открытый доступ</option>
-                                <option value="closed">Только платные</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="sortOrder">Сортировка</label>
-                            <select id="sortOrder">
-                                <option value="newest">Сначала новые</option>
-                                <option value="oldest">Сначала старые</option>
-                                <option value="relevance">По релевантности</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-
-        <div class="results-panel" id="resultsPanel">
-            <div class="results-header">
-                <div class="results-count" id="resultsCount"></div>
-                <div class="export-buttons">
-                    <button class="export-btn" id="downloadApaBtn">
-                        📄 APA
-                    </button>
-                    <button class="export-btn" id="downloadGostBtn">
-                        📋 ГОСТ
-                    </button>
-                    <button class="export-btn" id="downloadBibtexBtn">
-                        📚 BibTeX
-                    </button>
-                    <button class="export-btn copy-btn" id="copyBtn">
-                        📋 Копировать
-                    </button>
-                </div>
-            </div>
+        <!-- Админ-панель -->
+        <div class="admin-panel" id="adminPanel">
+            <h2><i class="fas fa-tools"></i> Админ-панель</h2>
+            <p>Здесь вы можете добавлять новые задания и управлять контентом</p>
             
-            <div class="analytics-panel" id="analyticsPanel" style="display: none;">
-                <h3>📊 Аналитика результатов</h3>
-                <div class="analytics-grid">
-                    <div class="analytics-card">
-                        <div class="analytics-title">Топ авторы</div>
-                        <div class="analytics-content" id="topAuthors"></div>
+            <div style="margin-top: 20px;">
+                <h3>Добавить новое задание</h3>
+                <form onsubmit="addNewTask(event)">
+                    <div class="form-group">
+                        <label for="taskModule">Модуль:</label>
+                        <select id="taskModule" required>
+                            <option value="orthography">Орфография</option>
+                            <option value="punctuation">Пунктуация</option>
+                            <option value="grammar">Грамматика</option>
+                            <option value="composition">Сочинение</option>
+                            <option value="reading">Чтение</option>
+                            <option value="exam">Пробные тесты</option>
+                        </select>
                     </div>
-                    <div class="analytics-card">
-                        <div class="analytics-title">Топ журналы</div>
-                        <div class="analytics-content" id="topJournals"></div>
+                    <div class="form-group">
+                        <label for="taskTitle">Название задания:</label>
+                        <input type="text" id="taskTitle" required>
                     </div>
-                    <div class="analytics-card">
-                        <div class="analytics-title">Распределение по годам</div>
-                        <div class="analytics-content" id="yearDistribution"></div>
+                    <div class="form-group">
+                        <label for="taskDescription">Описание:</label>
+                        <textarea id="taskDescription" rows="3" required></textarea>
                     </div>
-                    <div class="analytics-card">
-                        <div class="analytics-title">Открытый доступ</div>
-                        <div class="analytics-content" id="openAccessStats"></div>
+                    <div class="form-group">
+                        <label for="taskContent">Содержание задания:</label>
+                        <textarea id="taskContent" rows="5" required></textarea>
                     </div>
-                </div>
+                    <button type="submit" class="btn btn-warning">Добавить задание</button>
+                </form>
             </div>
-            <div class="selection-controls" id="selectionControls" style="display: none;">
-                <input type="checkbox" id="selectAllCheckbox">
-                <label for="selectAllCheckbox">Выбрать все</label>
-                <button class="select-all-btn" id="selectAllBtn">Выбрать все</button>
-                <button class="clear-selection-btn" id="clearSelectionBtn">Очистить</button>
-                <span class="selected-count" id="selectedCount">Выбрано: 0</span>
-                <button class="export-btn" id="downloadSelectedApaBtn" style="display: none;">📄 APA</button>
-                <button class="export-btn" id="downloadSelectedGostBtn" style="display: none;">📋 ГОСТ</button>
-                <button class="export-btn" id="downloadSelectedTxtBtn" style="display: none;">📥 TXT</button>
-            </div>
-            <div class="results-list" id="resultsList"></div>
         </div>
-
-    <footer class="footer">
-        <div class="footer-content">
-            <p>&copy; 2025 Разработка П.В. Алексеев, Горно-Алтайский государственный университет</p>
-            <p class="version-info" id="versionInfo">v1.0.0</p>
-        </div>
-    </footer>
+    </div>
 
     <script>
-        class SciSearcher {
-        constructor() {
-            this.results = [];
-            this.currentSource = 'openalex';
-            this.selectedResults = new Set();
-            this.cache = new Map(); // Кэш для результатов поиска
-            this.cacheExpiry = 5 * 60 * 1000; // 5 минут
-            this.version = '1.0.0'; // Текущая версия
-            this.updateVersionDisplay();
-            this.init();
-        }
+        // Система авторизации
+        let currentUser = null;
+        let users = JSON.parse(localStorage.getItem('lexicon_users')) || [];
+        let tasks = JSON.parse(localStorage.getItem('lexicon_tasks')) || [];
+        let userProgress = JSON.parse(localStorage.getItem('lexicon_progress')) || {};
 
-        // Обновление отображения версии
-        updateVersionDisplay() {
-            const versionElement = document.getElementById('versionInfo');
-            if (versionElement) {
-                versionElement.textContent = `v${this.version}`;
-            }
-        }
-
-        // Обновление версии (вызывается при каждом обновлении)
-        updateVersion() {
-            // Генерируем новую версию на основе текущей даты и времени
-            const now = new Date();
-            const timestamp = now.getTime();
-            const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
-            const timeStr = now.toTimeString().slice(0, 8).replace(/:/g, '');
+        // Переключение между вкладками авторизации
+        function switchAuthTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
             
-            // Формат: v1.0.YYYYMMDD.HHMMSS
-            this.version = `1.0.${dateStr}.${timeStr}`;
-            this.updateVersionDisplay();
+            event.target.classList.add('active');
+            document.getElementById(tab + 'Form').classList.add('active');
+        }
+
+        // Регистрация
+        function register(event) {
+            event.preventDefault();
             
-            console.log(`Sci-Searcher обновлен до версии ${this.version}`);
-        }
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const userClass = document.getElementById('regClass').value;
 
-            init() {
-                this.updateVersion(); // Обновляем версию при каждой загрузке
-                this.initTheme();
-                this.initForms();
-                this.initExportButtons();
-                this.initSelectionControls();
-                this.checkApiStatus();
+            // Проверяем, не зарегистрирован ли уже пользователь
+            if (users.find(u => u.email === email)) {
+                alert('Пользователь с таким email уже зарегистрирован!');
+                return;
             }
 
-            initTheme() {
-                // Загружаем сохраненную тему
-                const savedTheme = localStorage.getItem('theme') || 'light';
-                document.documentElement.setAttribute('data-theme', savedTheme);
-                
-                // Инициализируем переключатель темы
-                const themeToggle = document.getElementById('themeToggle');
-                if (themeToggle) {
-                    themeToggle.addEventListener('click', () => {
-                        const currentTheme = document.documentElement.getAttribute('data-theme');
-                        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                        document.documentElement.setAttribute('data-theme', newTheme);
-                        localStorage.setItem('theme', newTheme);
-                        
-                        // Анимация переключения
-                        themeToggle.style.transform = 'rotate(180deg)';
-                        setTimeout(() => {
-                            themeToggle.style.transform = 'rotate(0deg)';
-                        }, 300);
-                    });
-                }
-            }
-
-            initForms() {
-                const openalexForm = document.getElementById('openalexForm');
-                openalexForm.addEventListener('submit', (e) => this.handleOpenAlexSearch(e));
-                
-                // Инициализируем переключатель расширенных фильтров
-                const advancedToggle = document.getElementById('advancedToggle');
-                const advancedPanel = document.getElementById('advancedPanel');
-                
-                if (advancedToggle && advancedPanel) {
-                    advancedToggle.addEventListener('click', () => {
-                        const isActive = advancedPanel.classList.contains('active');
-                        if (isActive) {
-                            advancedPanel.classList.remove('active');
-                            advancedToggle.textContent = '⚙️ Расширенные фильтры';
-                        } else {
-                            advancedPanel.classList.add('active');
-                            advancedToggle.textContent = '⚙️ Скрыть фильтры';
-                        }
-                    });
-                }
-            }
-
-            initExportButtons() {
-                // Используем делегирование событий для динамически создаваемых кнопок
-                document.addEventListener('click', (e) => {
-                    if (e.target.id === 'downloadApaBtn') {
-                        e.preventDefault();
-                        this.downloadResults('apa');
-                    } else if (e.target.id === 'downloadGostBtn') {
-                        e.preventDefault();
-                        this.downloadResults('gost');
-                    } else if (e.target.id === 'downloadBibtexBtn') {
-                        e.preventDefault();
-                        this.downloadResults('bibtex');
-                    } else if (e.target.id === 'copyBtn') {
-                        e.preventDefault();
-                        this.copyResults();
-                    } else if (e.target.id === 'downloadSelectedApaBtn') {
-                        e.preventDefault();
-                        this.downloadSelectedResults('apa');
-                    } else if (e.target.id === 'downloadSelectedGostBtn') {
-                        e.preventDefault();
-                        this.downloadSelectedResults('gost');
-                    } else if (e.target.id === 'downloadSelectedTxtBtn') {
-                        e.preventDefault();
-                        this.downloadSelectedResults('txt');
-                    }
-                });
-            }
-
-            initSelectionControls() {
-                const selectAllBtn = document.getElementById('selectAllBtn');
-                const clearSelectionBtn = document.getElementById('clearSelectionBtn');
-                const selectAllCheckbox = document.getElementById('selectAllCheckbox');
-
-                if (selectAllBtn) selectAllBtn.addEventListener('click', () => this.selectAllResults());
-                if (clearSelectionBtn) clearSelectionBtn.addEventListener('click', () => this.clearSelection());
-                if (selectAllCheckbox) selectAllCheckbox.addEventListener('change', (e) => {
-                    if (e.target.checked) {
-                        this.selectAllResults();
-                    } else {
-                        this.clearSelection();
-                    }
-                });
-            }
-
-            async handleOpenAlexSearch(e) {
-                e.preventDefault();
-                
-                const keywords = document.getElementById('keywords').value.trim();
-                const startYear = document.getElementById('startYear').value;
-                const endYear = document.getElementById('endYear').value;
-                const resultsLimit = document.getElementById('resultsLimit').value;
-                const sortOrder = document.getElementById('sortOrder').value;
-                const filterType = document.getElementById('filterType').value;
-                const language = document.getElementById('language').value;
-                const openAccess = document.getElementById('openAccess').value;
-
-                if (!keywords) {
-                    alert('Пожалуйста, введите ключевые слова для поиска');
-                    return;
-                }
-
-                this.showLoading();
-                
-                try {
-                    const results = await this.searchOpenAlex(keywords, startYear, endYear, resultsLimit, sortOrder, filterType, language, openAccess);
-                    this.displayResults(results);
-                } catch (error) {
-                    this.showError('Ошибка при поиске: ' + error.message);
-                }
-            }
-
-
-
-
-            async searchOpenAlex(keywords, startYear, endYear, resultsLimit, sortOrder = 'newest', filterType = 'all', language = 'all', openAccess = 'all') {
-                // Проверяем кэш
-                const cacheKey = this.getCacheKey(keywords, startYear, endYear, resultsLimit, sortOrder, filterType, language, openAccess);
-                const cachedResults = this.getFromCache(cacheKey);
-                if (cachedResults) {
-                    return cachedResults;
-                }
-
-                // Определяем количество результатов на странице с учетом ограничений API
-                const perPage = 50; // Всегда используем 50 на страницу для стабильности
-                const targetResults = parseInt(resultsLimit);
-                
-                // Валидация годов
-                const currentYear = new Date().getFullYear();
-                const minYear = 1700; // Минимальный год для поиска
-                if (startYear && startYear < minYear) {
-                    throw new Error(`Год начала должен быть не ранее ${minYear}`);
-                }
-                if (endYear && endYear < minYear) {
-                    throw new Error(`Год окончания должен быть не ранее ${minYear}`);
-                }
-                if (startYear && endYear && startYear > endYear) {
-                    throw new Error('Год начала не может быть больше года окончания');
-                }
-                
-                // Формируем URL для OpenAlex API с запросом полных данных
-                // Используем новую версию данных (data_version=2) для лучшего качества метаданных
-                // Добавляем select для получения полной информации об авторах
-                let url = `https://api.openalex.org/works?search=${encodeURIComponent(keywords)}&per-page=${perPage}&data_version=2&select=id,title,authorships.author.display_name,authorships.author.id,publication_year,primary_location.source.display_name,doi,abstract_inverted_index,abstract,description,summary,biblio.first_page,biblio.last_page,landing_page_url`;
-                
-                // Правильное формирование фильтра по годам для OpenAlex API
-                if (startYear && endYear) {
-                    // Если указаны оба года, используем правильный синтаксис OpenAlex
-                    url += `&filter=publication_year:${startYear}-${endYear}`;
-                } else if (startYear) {
-                    // Если указан только начальный год
-                    url += `&filter=publication_year:>=${startYear}`;
-                } else if (endYear) {
-                    // Если указан только конечный год
-                    url += `&filter=publication_year:<=${endYear}`;
-                }
-                
-                // Добавляем фильтры по типу публикаций
-                if (filterType === 'journals') {
-                    url += `&filter=type:journal-article`;
-                } else if (filterType === 'conferences') {
-                    url += `&filter=type:proceedings-article`;
-                } else if (filterType === 'books') {
-                    url += `&filter=type:book,monograph`;
-                } else if (filterType === 'no_repositories') {
-                    url += `&filter=type:journal-article,proceedings-article,book,monograph`;
-                }
-                
-                // Добавляем фильтр по языку
-                if (language !== 'all') {
-                    url += `&filter=language:${language}`;
-                }
-                
-                // Добавляем фильтр по открытому доступу
-                if (openAccess === 'open') {
-                    url += `&filter=is_oa:true`;
-                } else if (openAccess === 'closed') {
-                    url += `&filter=is_oa:false`;
-                }
-                
-                // Добавляем параметры для получения полных данных с учетом сортировки
-                switch(sortOrder) {
-                    case 'oldest':
-                        url += '&sort=publication_date:asc';
-                        break;
-                    case 'relevance':
-                        url += '&sort=relevance_score:desc';
-                        break;
-                    case 'newest':
-                    default:
-                        url += '&sort=publication_date:desc';
-                        break;
-                }
-
-                console.log('OpenAlex API URL:', url);
-                console.log('Search parameters:', { keywords, startYear, endYear, resultsLimit });
-                console.log('Year filters applied:', { startYear, endYear, hasFilters: !!(startYear || endYear) });
-                console.log('Using OpenAlex data_version=2 (improved metadata quality)');
-
-                try {
-                    // Добавляем задержку перед первым запросом
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                    
-                    const response = await fetch(url, {
-                        method: 'GET',
-                        headers: {
-                            'Accept': 'application/json',
-                            'User-Agent': 'Sci-Searcher/1.0 (Educational Research Tool)'
-                        }
-                    });
-                    
-                    if (!response.ok) {
-                        // Если есть фильтры по годам или языку и произошла ошибка, пробуем поиск без них
-                        if ((response.status === 403 || response.status === 400) && (startYear || endYear || language !== 'all')) {
-                            console.log(`Ошибка ${response.status} с фильтрами, пробуем поиск без проблемных фильтров...`);
-                            
-                            // Определяем сортировку для поиска без фильтров
-                            let sortParam = 'publication_date:desc';
-                            switch(sortOrder) {
-                                case 'oldest':
-                                    sortParam = 'publication_date:asc';
-                                    break;
-                                case 'relevance':
-                                    sortParam = 'relevance_score:desc';
-                                    break;
-                            }
-                            
-                            // Создаем URL без проблемных фильтров
-                            let fallbackUrl = `https://api.openalex.org/works?search=${encodeURIComponent(keywords)}&per-page=${perPage}&sort=${sortParam}&data_version=2&select=id,title,authorships.author.display_name,authorships.author.id,publication_year,primary_location.source.display_name,doi,abstract_inverted_index,abstract,description,summary,biblio.first_page,biblio.last_page,landing_page_url`;
-                            
-                            // Добавляем только безопасные фильтры
-                            if (filterType === 'journals') {
-                                fallbackUrl += `&filter=type:journal-article`;
-                            } else if (filterType === 'conferences') {
-                                fallbackUrl += `&filter=type:proceedings-article`;
-                            } else if (filterType === 'books') {
-                                fallbackUrl += `&filter=type:book,monograph`;
-                            } else if (filterType === 'no_repositories') {
-                                fallbackUrl += `&filter=type:journal-article,proceedings-article,book,monograph`;
-                            }
-                            
-                            // НЕ добавляем фильтр по языку в fallback, так как он может вызывать ошибки
-                            
-                            if (openAccess === 'open') {
-                                fallbackUrl += `&filter=is_oa:true`;
-                            } else if (openAccess === 'closed') {
-                                fallbackUrl += `&filter=is_oa:false`;
-                            }
-                            
-                            const fallbackResponse = await fetch(fallbackUrl, {
-                                method: 'GET',
-                                headers: {
-                                    'Accept': 'application/json',
-                                    'User-Agent': 'Sci-Searcher/1.0 (Educational Research Tool)'
-                                }
-                            });
-                            
-                            if (fallbackResponse.ok) {
-                                const fallbackData = await fallbackResponse.json();
-                                let results = fallbackData.results || [];
-                                
-                                // Фильтруем результаты по языку на стороне клиента, если фильтр по языку был запрошен
-                                if (language !== 'all') {
-                                    const originalCount = results.length;
-                                    
-                                    // Логируем языки в исходных результатах
-                                    console.log(`Исходные языки в результатах для фильтрации по ${language}:`);
-                                    results.slice(0, 10).forEach((work, index) => {
-                                        console.log(`  ${index + 1}. ${work.title?.substring(0, 50)}... - язык: ${work.language || 'не указан'}`);
-                                    });
-                                    
-                                    results = results.filter(work => {
-                                        const workLanguage = work.language;
-                                        if (!workLanguage) return true; // Если язык не указан, включаем в результаты
-                                        return workLanguage === language;
-                                    });
-                                    
-                                    console.log(`После клиентской фильтрации по языку ${language}: ${results.length} из ${originalCount} результатов`);
-                                    
-                                    // Добавляем предупреждение, если результаты были отфильтрованы
-                                    if (results.length > 0 && originalCount > results.length) {
-                                        results[0]._warning = `⚠️ Фильтрация по языку "${language}" на сервере недоступна. Показаны ${results.length} результатов с клиентской фильтрацией.`;
-                                    }
-                                }
-                                
-                                // Фильтруем результаты по годам на стороне клиента
-                                if (startYear || endYear) {
-                                    const originalCount = results.length;
-                                    results = results.filter(work => {
-                                        const year = work.publication_year;
-                                        if (!year) return true; // Если год не указан, включаем в результаты
-                                        
-                                        if (startYear && endYear) {
-                                            return year >= parseInt(startYear) && year <= parseInt(endYear);
-                                        } else if (startYear) {
-                                            return year >= parseInt(startYear);
-                                        } else if (endYear) {
-                                            return year <= parseInt(endYear);
-                                        }
-                                        return true;
-                                    });
-                                    
-                                    console.log(`После клиентской фильтрации по годам: ${results.length} из ${originalCount} результатов`);
-                                    
-                                    // Добавляем предупреждение только если результаты были отфильтрованы
-                                    if (results.length > 0 && originalCount > results.length) {
-                                        results[0]._warning = `⚠️ Фильтрация по годам на сервере недоступна. Показаны ${results.length} результатов с клиентской фильтрацией по годам ${startYear || 'не указан'} - ${endYear || 'не указан'}.`;
-                                    }
-                                }
-                                
-                                return results;
-                            } else {
-                                // Более мягкая обработка ошибки 403 - пробуем альтернативные методы
-                                console.warn('OpenAlex API ограничен (403), пробуем альтернативные методы...');
-                                
-                                // Пробуем запрос без некоторых параметров
-                                const simplifiedUrl = `https://api.openalex.org/works?search=${encodeURIComponent(keywords)}&per-page=10&data_version=2`;
-                                
-                                try {
-                                    const simplifiedResponse = await fetch(simplifiedUrl, {
-                                        method: 'GET',
-                                        headers: {
-                                            'Accept': 'application/json',
-                                            'User-Agent': 'Sci-Searcher/1.0 (Educational Research Tool)'
-                                        }
-                                    });
-                                    
-                                    if (simplifiedResponse.ok) {
-                                        const simplifiedData = await simplifiedResponse.json();
-                                        console.log('Упрощенный запрос успешен, получено результатов:', simplifiedData.results?.length || 0);
-                                        return simplifiedData.results || [];
-                                    }
-                                } catch (simplifiedError) {
-                                    console.warn('Упрощенный запрос также не удался:', simplifiedError);
-                                }
-                                
-                                // Если все методы не работают, показываем дружелюбное сообщение
-                                throw new Error('OpenAlex API временно недоступен. Это может быть связано с:\n\n' +
-                                    '• Временными ограничениями сервиса\n' +
-                                    '• Высокой нагрузкой на сервер\n' +
-                                    '• Техническими работами\n\n' +
-                                    'Рекомендации:\n' +
-                                    '• Попробуйте через несколько минут\n' +
-                                    '• Упростите поисковый запрос\n' +
-                                    '• Проверьте интернет-соединение');
-                            }
-                        } else if (response.status === 429) {
-                            // Более мягкая обработка ошибки 429
-                            console.warn('Превышен лимит запросов (429), пробуем упрощенный запрос...');
-                            
-                            // Пробуем запрос с меньшим количеством результатов
-                            const limitedUrl = `https://api.openalex.org/works?search=${encodeURIComponent(keywords)}&per-page=5&data_version=2`;
-                            
-                            try {
-                                const limitedResponse = await fetch(limitedUrl, {
-                                    method: 'GET',
-                                    headers: {
-                                        'Accept': 'application/json',
-                                        'User-Agent': 'Sci-Searcher/1.0 (Educational Research Tool)'
-                                    }
-                                });
-                                
-                                if (limitedResponse.ok) {
-                                    const limitedData = await limitedResponse.json();
-                                    console.log('Ограниченный запрос успешен, получено результатов:', limitedData.results?.length || 0);
-                                    return limitedData.results || [];
-                                }
-                            } catch (limitedError) {
-                                console.warn('Ограниченный запрос также не удался:', limitedError);
-                            }
-                            
-                            throw new Error('Превышен лимит запросов к OpenAlex API. Пожалуйста, подождите 5-10 минут и повторите запрос.');
-                        } else if (response.status === 400) {
-                            // Ошибка 400 без фильтров по годам
-                            throw new Error('Ошибка в параметрах поиска. Возможные причины:\n\n' +
-                                '• Неправильно указаны параметры поиска\n' +
-                                '• Неподдерживаемые символы в ключевых словах\n' +
-                                '• Слишком строгие фильтры\n\n' +
-                                'Попробуйте:\n' +
-                                '• Упростить поисковый запрос\n' +
-                                '• Изменить фильтры\n' +
-                                '• Проверить корректность введенных данных');
-                        } else {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                    }
-                
-                const data = await response.json();
-                    console.log('OpenAlex API response:', data);
-                    console.log('Total results found:', data.meta?.count || 0);
-                    
-                    // Логируем информацию о языках в результатах
-                    if (data.results && data.results.length > 0) {
-                        console.log('=== АНАЛИЗ ЯЗЫКОВ В OPENALEX API ===');
-                        
-                        // Собираем все уникальные языки
-                        const allLanguages = new Set();
-                        const languageStats = {};
-                        
-                        data.results.forEach(work => {
-                            const lang = work.language || 'не указан';
-                            allLanguages.add(lang);
-                            languageStats[lang] = (languageStats[lang] || 0) + 1;
-                        });
-                        
-                        console.log('Все найденные языки в API:', Array.from(allLanguages));
-                        console.log('Статистика языков:', languageStats);
-                        
-                        // Показываем детальную информацию о первых 10 результатах
-                        console.log('Детальная информация о языках:');
-                        data.results.slice(0, 10).forEach((work, index) => {
-                            console.log(`${index + 1}. "${work.title?.substring(0, 50)}..." - язык: "${work.language}"`);
-                        });
-                        
-                        console.log('=== КОНЕЦ АНАЛИЗА ЯЗЫКОВ ===');
-                    }
-                    
-                    let results = data.results || [];
-                    
-                    // Логируем информацию о фильтрах
-                    if (startYear || endYear) {
-                        console.log(`Searching with year filters: ${startYear || 'none'} to ${endYear || 'none'}`);
-                        console.log(`Results with filters: ${results.length}`);
-                        
-                        // Добавляем информационное сообщение о том, что фильтрация работает
-                        if (results.length > 0) {
-                            results[0]._info = `✅ Фильтрация по годам работает корректно. Найдено ${results.length} результатов в диапазоне ${startYear || 'не указан'} - ${endYear || 'не указан'}.`;
-                        }
-                    }
-                    
-                    // Проверяем, есть ли результаты с учетом фильтров по годам или языку
-                    if (results.length === 0 && (startYear || endYear || language !== 'all')) {
-                        console.log('Нет результатов с фильтрами, пробуем поиск без фильтров...');
-                        
-                        // Пробуем поиск без фильтров по годам и языку
-                        const urlWithoutYearFilters = `https://api.openalex.org/works?search=${encodeURIComponent(keywords)}&per-page=${perPage}&sort=publication_date:desc&data_version=2&select=id,title,authorships.author.display_name,authorships.author.id,publication_year,primary_location.source.display_name,doi,abstract_inverted_index,abstract,description,summary,biblio.first_page,biblio.last_page,landing_page_url`;
-                        
-                        try {
-                            const responseWithoutFilters = await fetch(urlWithoutYearFilters, {
-                                method: 'GET',
-                                headers: {
-                                    'Accept': 'application/json',
-                                    'User-Agent': 'Sci-Searcher/1.0 (Educational Research Tool)'
-                                }
-                            });
-                            
-                            if (responseWithoutFilters.ok) {
-                                const dataWithoutFilters = await responseWithoutFilters.json();
-                                let resultsWithoutFilters = dataWithoutFilters.results || [];
-                                
-                                if (resultsWithoutFilters.length > 0) {
-                                    // Фильтруем результаты по языку на стороне клиента
-                                    let filteredResults = resultsWithoutFilters;
-                                    if (language !== 'all') {
-                                        filteredResults = filteredResults.filter(work => {
-                                            const workLanguage = work.language;
-                                            if (!workLanguage) return true; // Если язык не указан, включаем в результаты
-                                            return workLanguage === language;
-                                        });
-                                    }
-                                    
-                                    // Фильтруем результаты по годам на стороне клиента
-                                    if (startYear || endYear) {
-                                        filteredResults = filteredResults.filter(work => {
-                                            const year = work.publication_year;
-                                            if (!year) return true; // Если год не указан, включаем в результаты
-                                            
-                                            if (startYear && endYear) {
-                                                return year >= startYear && year <= endYear;
-                                            } else if (startYear) {
-                                                return year >= startYear;
-                                            } else if (endYear) {
-                                                return year <= endYear;
-                                            }
-                                            return true;
-                                        });
-                                    }
-                                    
-                                    if (filteredResults.length > 0) {
-                                        console.log(`Найдено ${filteredResults.length} результатов после клиентской фильтрации`);
-                                        results = filteredResults.slice(0, targetResults);
-                                    } else {
-                                        // Если после фильтрации нет результатов, показываем все результаты с предупреждением
-                                        console.log('После фильтрации по годам результатов нет, показываем все найденные');
-                                        results = resultsWithoutFilters.slice(0, targetResults);
-                                        
-                                        // Добавляем предупреждение в результаты
-                                        if (results.length > 0) {
-                                            results[0]._warning = `В указанном диапазоне годов (${startYear || 'не указан'} - ${endYear || 'не указан'}) результатов не найдено. Показаны все доступные результаты.`;
-                                        }
-                                    }
-                                }
-                            }
-                        } catch (error) {
-                            console.warn('Ошибка при поиске без фильтров:', error);
-                        }
-                    }
-                    
-                    // Определяем переменные для пагинации
-                    let maxPages = 1; // По умолчанию только первая страница
-                    
-                    // Если нужно больше 50 результатов, делаем дополнительные запросы
-                    if (targetResults > 50 && data.meta && data.meta.count > perPage) {
-                        const totalCount = Math.min(data.meta.count, targetResults);
-                        const totalPages = Math.ceil(totalCount / perPage);
-                        maxPages = Math.min(totalPages, 10); // Увеличиваем до 10 страниц для лучшего покрытия
-                        
-                        console.log(`Найдено ${totalCount} результатов, делаем ${maxPages} запросов`);
-                        
-                        // Делаем дополнительные запросы с задержкой между запросами
-                        for (let page = 2; page <= maxPages; page++) {
-                            try {
-                                // Добавляем небольшую задержку между запросами
-                                await new Promise(resolve => setTimeout(resolve, 800));
-                                
-                                const pageUrl = url + `&page=${page}`;
-                                console.log(`Запрос страницы ${page}:`, pageUrl);
-                                
-                                const pageResponse = await fetch(pageUrl);
-                                
-                                if (!pageResponse.ok) {
-                                    console.warn(`Ошибка при запросе страницы ${page}:`, pageResponse.status);
-                                    break; // Прерываем цикл при ошибке
-                                }
-                                
-                                const pageData = await pageResponse.json();
-                                results = results.concat(pageData.results || []);
-                                
-                                console.log(`Получено ${pageData.results?.length || 0} результатов со страницы ${page}`);
-                                
-                            } catch (error) {
-                                console.warn(`Ошибка при получении страницы ${page}:`, error.message);
-                                break; // Прерываем цикл при ошибке
-                            }
-                        }
-                    }
-                    
-                    // Дополнительная фильтрация по годам на стороне клиента для лучшего покрытия
-                    if (startYear || endYear) {
-                        const originalLength = results.length;
-                        results = results.filter(work => {
-                            const year = work.publication_year;
-                            if (!year) return true; // Если год не указан, включаем в результаты
-                            
-                            if (startYear && endYear) {
-                                return year >= parseInt(startYear) && year <= parseInt(endYear);
-                            } else if (startYear) {
-                                return year >= parseInt(startYear);
-                            } else if (endYear) {
-                                return year <= parseInt(endYear);
-                            }
-                            return true;
-                        });
-                        
-                        console.log(`После клиентской фильтрации: ${originalLength} → ${results.length} результатов`);
-                        
-                        // Если после фильтрации результатов мало, пробуем получить больше данных
-                        if (results.length < targetResults && results.length < 50) {
-                            console.log('Результатов мало после фильтрации, пробуем получить больше данных...');
-                            
-                            // Пробуем получить больше страниц для лучшего покрытия
-                            const additionalPages = Math.min(20, Math.ceil(targetResults / perPage) + 5);
-                            
-                            for (let page = maxPages + 1; page <= additionalPages; page++) {
-                                try {
-                                    await new Promise(resolve => setTimeout(resolve, 1000));
-                                    
-                                    const pageUrl = url + `&page=${page}`;
-                                    console.log(`Дополнительный запрос страницы ${page}:`, pageUrl);
-                                    
-                                    const pageResponse = await fetch(pageUrl);
-                                    
-                                    if (!pageResponse.ok) {
-                                        console.warn(`Ошибка при дополнительном запросе страницы ${page}:`, pageResponse.status);
-                                        break;
-                                    }
-                                    
-                                    const pageData = await pageResponse.json();
-                                    const newResults = pageData.results || [];
-                                    
-                                    // Фильтруем новые результаты по годам
-                                    const filteredNewResults = newResults.filter(work => {
-                                        const year = work.publication_year;
-                                        if (!year) return true;
-                                        
-                                        if (startYear && endYear) {
-                                            return year >= parseInt(startYear) && year <= parseInt(endYear);
-                                        } else if (startYear) {
-                                            return year >= parseInt(startYear);
-                                        } else if (endYear) {
-                                            return year <= parseInt(endYear);
-                                        }
-                                        return true;
-                                    });
-                                    
-                                    results = results.concat(filteredNewResults);
-                                    console.log(`Добавлено ${filteredNewResults.length} отфильтрованных результатов со страницы ${page}`);
-                                    
-                                    // Если набрали достаточно результатов, прерываем цикл
-                                    if (results.length >= targetResults) {
-                                        console.log(`Достигнуто целевое количество результатов: ${results.length}`);
-                                        break;
-                                    }
-                                    
-                                } catch (error) {
-                                    console.warn(`Ошибка при дополнительном запросе страницы ${page}:`, error.message);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    
-                    // Сохраняем результаты в кэш
-                    this.setCache(cacheKey, results);
-                    
-                    return results;
-                    
-                } catch (error) {
-                    console.error('Ошибка при поиске в OpenAlex:', error);
-                    
-                    if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
-                        throw new Error('Ошибка сетевого подключения. Возможные причины:\n\n' +
-                            '• Проблемы с интернет-соединением\n' +
-                            '• Блокировка CORS политиками браузера\n' +
-                            '• Блокировка антивирусом или файрволом\n' +
-                            '• Временные проблемы с OpenAlex сервером\n\n' +
-                            'Попробуйте:\n' +
-                            '• Проверить интернет-соединение\n' +
-                            '• Отключить VPN или антивирус временно\n' +
-                            '• Попробовать другой браузер\n' +
-                            '• Обратиться к разработчику: pavel.alekseev.gasu@gmail.com');
-                    }
-                    
-                    throw error;
-                }
-            }
-
-
-
-
-
-
-
-
-
-
-            displayResults(results) {
-                // Фильтрация теперь происходит на стороне API, поэтому просто отображаем результаты
-                this.results = results;
-                this.selectedResults.clear();
-                const resultsPanel = document.getElementById('resultsPanel');
-                const resultsList = document.getElementById('resultsList');
-                const resultsCount = document.getElementById('resultsCount');
-                const selectionControls = document.getElementById('selectionControls');
-
-                resultsPanel.style.display = 'block';
-                resultsPanel.classList.add('active');
-                
-                // Показываем информацию о результатах
-                let countText = `Найдено результатов: ${results.length}`;
-                resultsCount.textContent = countText;
-
-                // Показываем элементы управления выбором
-                if (selectionControls) {
-                    selectionControls.style.display = 'flex';
-                }
-
-                if (results.length === 0) {
-                    resultsList.innerHTML = '<div class="no-results">Результаты не найдены. Попробуйте изменить параметры поиска.</div>';
-                    return;
-                }
-
-                // Проверяем наличие предупреждений
-                let warningHtml = '';
-                if (results.length > 0 && results[0]._warning) {
-                    warningHtml = `<div class="error" style="margin-bottom: 15px; background: #fff3cd; color: #856404; border-color: #ffeaa7;">
-                        <strong>⚠️ Внимание:</strong> ${results[0]._warning}
-                    </div>`;
-                }
-
-                try {
-                    // Отображаем все результаты сразу
-                    resultsList.innerHTML = warningHtml + results.map((work, index) => this.formatResult(work, index + 1)).join('');
-                    this.updateSelectionCount();
-                    this.generateAnalytics(results);
-                } catch (error) {
-                    console.error('Ошибка при отображении результатов:', error);
-                    console.error('Проблемный результат:', results.find((work, index) => {
-                        try {
-                            this.formatResult(work, index + 1);
-                            return false;
-                        } catch (e) {
-                            console.error(`Ошибка в результате ${index + 1}:`, e);
-                            return true;
-                        }
-                    }));
-                    
-                    resultsList.innerHTML = warningHtml + '<div class="error">Ошибка при отображении некоторых результатов. Проверьте консоль для подробностей.</div>';
-                }
-            }
-
-            generateAnalytics(results) {
-                if (results.length === 0) return;
-                
-                const analyticsPanel = document.getElementById('analyticsPanel');
-                analyticsPanel.style.display = 'block';
-                
-                // Анализ авторов
-                const authors = {};
-                results.forEach(work => {
-                    work.authorships?.forEach(authorship => {
-                        const authorName = authorship?.author?.display_name;
-                        if (authorName) {
-                            authors[authorName] = (authors[authorName] || 0) + 1;
-                        }
-                    });
-                });
-                
-                const topAuthors = Object.entries(authors)
-                    .sort(([,a], [,b]) => b - a)
-                    .slice(0, 5);
-                
-                document.getElementById('topAuthors').innerHTML = topAuthors
-                    .map(([name, count]) => `
-                        <div class="analytics-item">
-                            <span>${name}</span>
-                            <span>${count}</span>
-                        </div>
-                        <div class="analytics-bar">
-                            <div class="analytics-bar-fill" style="width: ${(count / topAuthors[0][1]) * 100}%"></div>
-                        </div>
-                    `).join('');
-                
-                // Анализ журналов
-                const journals = {};
-                results.forEach(work => {
-                    const journalName = work.primary_location?.source?.display_name;
-                    if (journalName) {
-                        journals[journalName] = (journals[journalName] || 0) + 1;
-                    }
-                });
-                
-                const topJournals = Object.entries(journals)
-                    .sort(([,a], [,b]) => b - a)
-                    .slice(0, 5);
-                
-                document.getElementById('topJournals').innerHTML = topJournals
-                    .map(([name, count]) => `
-                        <div class="analytics-item">
-                            <span>${name.length > 30 ? name.substring(0, 30) + '...' : name}</span>
-                            <span>${count}</span>
-                        </div>
-                        <div class="analytics-bar">
-                            <div class="analytics-bar-fill" style="width: ${(count / topJournals[0][1]) * 100}%"></div>
-                        </div>
-                    `).join('');
-                
-                // Распределение по годам
-                const years = {};
-                results.forEach(work => {
-                    const year = work.publication_year;
-                    if (year) {
-                        years[year] = (years[year] || 0) + 1;
-                    }
-                });
-                
-                const sortedYears = Object.entries(years)
-                    .sort(([a], [b]) => b - a)
-                    .slice(0, 5);
-                
-                document.getElementById('yearDistribution').innerHTML = sortedYears
-                    .map(([year, count]) => `
-                        <div class="analytics-item">
-                            <span>${year}</span>
-                            <span>${count}</span>
-                        </div>
-                        <div class="analytics-bar">
-                            <div class="analytics-bar-fill" style="width: ${(count / sortedYears[0][1]) * 100}%"></div>
-                        </div>
-                    `).join('');
-                
-                // Статистика открытого доступа
-                const openAccessCount = results.filter(work => work.open_access?.is_oa).length;
-                const totalCount = results.length;
-                const openAccessPercent = Math.round((openAccessCount / totalCount) * 100);
-                
-                // Логируем информацию об открытом доступе для диагностики
-                console.log('=== АНАЛИЗ ОТКРЫТОГО ДОСТУПА ===');
-                console.log(`Всего результатов: ${totalCount}`);
-                console.log(`Открытый доступ: ${openAccessCount} (${openAccessPercent}%)`);
-                console.log(`Платный доступ: ${totalCount - openAccessCount} (${100 - openAccessPercent}%)`);
-                
-                // Показываем примеры для каждого типа доступа
-                const openAccessExamples = results.filter(work => work.open_access?.is_oa).slice(0, 3);
-                const closedAccessExamples = results.filter(work => !work.open_access?.is_oa).slice(0, 3);
-                
-                console.log('Примеры открытого доступа:', openAccessExamples.map(w => ({
-                    title: w.title?.substring(0, 50) + '...',
-                    is_oa: w.open_access?.is_oa,
-                    oa_url: w.open_access?.oa_url,
-                    oa_status: w.open_access?.oa_status
-                })));
-                
-                console.log('Примеры платного доступа:', closedAccessExamples.map(w => ({
-                    title: w.title?.substring(0, 50) + '...',
-                    is_oa: w.open_access?.is_oa,
-                    oa_url: w.open_access?.oa_url,
-                    oa_status: w.open_access?.oa_status
-                })));
-                
-                console.log('=== КОНЕЦ АНАЛИЗА ОТКРЫТОГО ДОСТУПА ===');
-                
-                document.getElementById('openAccessStats').innerHTML = `
-                    <div class="analytics-item">
-                        <span>Открытый доступ</span>
-                        <span>${openAccessCount} (${openAccessPercent}%)</span>
-                    </div>
-                    <div class="analytics-bar">
-                        <div class="analytics-bar-fill" style="width: ${openAccessPercent}%"></div>
-                    </div>
-                    <div class="analytics-item">
-                        <span>Платный доступ</span>
-                        <span>${totalCount - openAccessCount} (${100 - openAccessPercent}%)</span>
-                    </div>
-                    <div class="analytics-bar">
-                        <div class="analytics-bar-fill" style="width: ${100 - openAccessPercent}%; background: var(--accent-secondary);"></div>
-                    </div>
-                `;
-            }
-
-            // Функция для безопасного отображения HTML-контента
-            sanitizeHtml(html) {
-                if (!html) return '';
-                
-                // Простая очистка HTML - удаляем потенциально опасные теги
-                // и оставляем только безопасные теги форматирования
-                let cleanedHtml = html
-                    // Удаляем потенциально опасные теги
-                    .replace(/<script[^>]*>.*?<\/script>/gi, '')
-                    .replace(/<iframe[^>]*>.*?<\/iframe>/gi, '')
-                    .replace(/<object[^>]*>.*?<\/object>/gi, '')
-                    .replace(/<embed[^>]*>.*?<\/embed>/gi, '')
-                    .replace(/<link[^>]*>/gi, '')
-                    .replace(/<meta[^>]*>/gi, '')
-                    .replace(/<style[^>]*>.*?<\/style>/gi, '')
-                    // Удаляем атрибуты onclick, onload и другие события
-                    .replace(/\s*on\w+\s*=\s*["'][^"']*["']/gi, '')
-                    // Удаляем javascript: ссылки
-                    .replace(/javascript:/gi, '')
-                    // Очищаем пустые теги
-                    .replace(/<(\w+)[^>]*>\s*<\/\1>/gi, '')
-                    // Удаляем пустые параграфы
-                    .replace(/<p[^>]*>\s*<\/p>/gi, '')
-                    // Удаляем пустые span'ы
-                    .replace(/<span[^>]*>\s*<\/span>/gi, '');
-                
-                // Если после очистки остались только пустые теги, возвращаем текст без тегов
-                const textOnly = cleanedHtml.replace(/<[^>]*>/g, '').trim();
-                if (textOnly.length === 0) {
-                    return '';
-                }
-                
-                return cleanedHtml;
-            }
-
-            formatResult(work, index) {
-                console.log(`\n=== FORMATTING RESULT ${index} ===`);
-                console.log('Work object:', work);
-                console.log('Work keys:', Object.keys(work));
-                console.log('Biblio data:', work.biblio);
-                console.log('Page info:', {
-                    first_page: work.biblio?.first_page,
-                    last_page: work.biblio?.last_page,
-                    pages: work.pages
-                });
-                console.log('Authorships:', work.authorships);
-                console.log('Primary location:', work.primary_location);
-                
-                const title = work.title || 'Без названия';
-                
-                    // Улучшенное извлечение авторов с отладкой
-                console.log('=== ОТЛАДКА АВТОРОВ ===');
-                console.log('Work data for authors:', work);
-                console.log('Authorships:', work.authorships);
-                console.log('Work.authors:', work.authors);
-                console.log('Work.author:', work.author);
-                console.log('All work keys:', Object.keys(work));
-                
-                let authors = 'Авторы не указаны';
-                
-                if (work.authorships && work.authorships.length > 0) {
-                    const authorNames = work.authorships
-                        .map(authorship => {
-                            console.log('Authorship:', authorship);
-                            return authorship?.author?.display_name || 
-                                   authorship?.author?.name ||
-                                   authorship?.author?.title ||
-                                   authorship?.display_name;
-                        })
-                        .filter(name => name && name.trim() !== '');
-                    
-                    console.log('Extracted author names:', authorNames);
-                    
-                    if (authorNames.length > 0) {
-                        authors = authorNames.join(', ');
-                    }
-                } else if (work.authors && work.authors.length > 0) {
-                    // Альтернативный формат авторов
-                    const authorNames = work.authors
-                        .map(author => author?.display_name || author?.name || author?.title)
-                        .filter(name => name && name.trim() !== '');
-                    
-                    if (authorNames.length > 0) {
-                        authors = authorNames.join(', ');
-                    }
-                } else if (work.author) {
-                    // Единичный автор
-                    authors = work.author.display_name || work.author.name || work.author.title || 'Автор не указан';
-                } else {
-                    // Проверяем другие возможные поля
-                    console.log('Проверяем альтернативные поля для авторов...');
-                    
-                    // Проверяем различные возможные поля
-                    const possibleAuthorFields = [
-                        'creator', 'creators', 'contributor', 'contributors',
-                        'writer', 'writers', 'researcher', 'researchers',
-                        'author_name', 'author_names', 'author_list', 'authors_list'
-                    ];
-                    
-                    for (const field of possibleAuthorFields) {
-                        if (work[field]) {
-                            console.log(`Найдено поле ${field}:`, work[field]);
-                            if (Array.isArray(work[field])) {
-                                const names = work[field].map(item => 
-                                    typeof item === 'string' ? item : 
-                                    item?.name || item?.display_name || item?.title
-                                ).filter(name => name && name.trim() !== '');
-                                
-                                if (names.length > 0) {
-                                    authors = names.join(', ');
-                                    console.log(`Авторы из поля ${field}:`, authors);
-                                    break;
-                                }
-                            } else if (typeof work[field] === 'string') {
-                                authors = work[field];
-                                console.log(`Автор из поля ${field}:`, authors);
-                                break;
-                            }
-                        }
-                    }
-                }
-                
-                console.log('Final authors:', authors);
-                const journal = work.primary_location?.source?.display_name || 'Журнал не указан';
-                const year = work.publication_year || 'Год не указан';
-                    
-                    // Улучшенное извлечение аннотации
-                    console.log('Abstract fields available:', {
-                        'abstract_inverted_index': work.abstract_inverted_index,
-                        'abstract': work.abstract,
-                        'description': work.description,
-                        'summary': work.summary
-                    });
-                    
-                let abstract;
-                    if (work.abstract_inverted_index) {
-                        abstract = this.reconstructAbstract(work.abstract_inverted_index);
-                        console.log('Reconstructed abstract length:', abstract.length);
-                    } else if (work.abstract) {
-                        abstract = work.abstract;
-                        console.log('Direct abstract length:', abstract.length);
-                    } else if (work.description) {
-                        abstract = work.description;
-                        console.log('Description used as abstract, length:', abstract.length);
-                    } else if (work.summary) {
-                        abstract = work.summary;
-                        console.log('Summary used as abstract, length:', abstract.length);
-                    } else {
-                        abstract = 'Аннотация недоступна';
-                        console.log('No abstract found');
-                    }
-                    
-                const doi = work.doi;
-                const linkUrl = work.landing_page_url || work.id || '#';
-
-                const resultIndex = index - 1;
-                
-                return `
-                    <div class="result-item" data-index="${resultIndex}">
-                            <input type="checkbox" class="result-checkbox" data-index="${resultIndex}" onchange="window.sciSearcher.toggleSelection(${resultIndex})">
-                        <div class="result-title">${title}</div>
-                        <div class="result-authors">${authors}</div>
-                        <div class="result-journal">${journal}</div>
-                        <div class="result-year">Год: ${year}</div>
-                        ${work.biblio?.first_page ? `
-                            <div class="result-pages" style="color: #27ae60; font-size: 0.8rem; margin-bottom: 6px;">
-                                📄 Страницы: ${work.biblio.first_page}${work.biblio.last_page && work.biblio.first_page !== work.biblio.last_page ? `–${work.biblio.last_page}` : ''}
-                            </div>
-                        ` : work.biblio?.volume ? `
-                            <div class="result-pages" style="color: #f39c12; font-size: 0.8rem; margin-bottom: 6px;">
-                                📖 Том ${work.biblio.volume}${work.biblio.issue ? `, № ${work.biblio.issue}` : ''} (страницы не указаны)
-                            </div>
-                        ` : ''}
-                        ${abstract && abstract !== 'Аннотация недоступна' ? `
-                            <div class="result-abstract abstract-preview" id="abstract-${resultIndex}">
-                                ${this.sanitizeHtml(abstract)}
-                            </div>
-                                <button class="toggle-abstract" onclick="window.sciSearcher.toggleAbstract(${resultIndex})">
-                                    Показать полностью
-                                </button>
-                        ` : ''}
-                        ${doi ? `<div class="result-doi">DOI: <a href="${doi.startsWith('https://doi.org/') ? doi : `https://doi.org/${doi}`}" target="_blank">${doi.replace('https://doi.org/', '')}</a></div>` : ''}
-                        <a href="${linkUrl}" target="_blank" class="result-link">
-                            🔗 Перейти к статье
-                        </a>
-                    </div>
-                `;
-            }
-
-            reconstructAbstract(abstractIndex) {
-                if (!abstractIndex) return 'Аннотация недоступна';
-                
-                console.log('Reconstructing abstract from index:', abstractIndex);
-                
-                try {
-                    const words = [];
-                    for (const [word, positions] of Object.entries(abstractIndex)) {
-                        if (Array.isArray(positions)) {
-                            positions.forEach(pos => {
-                                words[pos] = word;
-                            });
-                        }
-                    }
-                    
-                    // Фильтруем пустые слоты и соединяем слова
-                    const fullText = words.filter(word => word !== undefined).join(' ');
-                    console.log('Reconstructed abstract full text length:', fullText.length);
-                    console.log('First 200 chars:', fullText.substring(0, 200));
-                    
-                    return fullText || 'Аннотация недоступна';
-                } catch (error) {
-                    console.error('Error reconstructing abstract:', error);
-                    return 'Ошибка при восстановлении аннотации';
-                }
-            }
-
-            toggleSelection(index) {
-                const checkbox = document.querySelector(`input[data-index="${index}"]`);
-                const resultItem = document.querySelector(`.result-item[data-index="${index}"]`);
-                
-                if (checkbox.checked) {
-                    this.selectedResults.add(index);
-                    resultItem.classList.add('selected');
-                } else {
-                    this.selectedResults.delete(index);
-                    resultItem.classList.remove('selected');
-                }
-                
-                this.updateSelectionCount();
-            }
-
-            toggleAbstract(index) {
-                const abstractElement = document.getElementById(`abstract-${index}`);
-                const button = document.querySelector(`button[onclick="window.sciSearcher.toggleAbstract(${index})"]`);
-                
-                if (abstractElement.classList.contains('abstract-preview')) {
-                    abstractElement.classList.remove('abstract-preview');
-                    abstractElement.classList.add('abstract-full');
-                    button.textContent = 'Свернуть';
-                } else {
-                    abstractElement.classList.remove('abstract-full');
-                    abstractElement.classList.add('abstract-preview');
-                    button.textContent = 'Показать полностью';
-                }
-            }
-
-            selectAllResults() {
-                this.selectedResults.clear();
-                const checkboxes = document.querySelectorAll('.result-checkbox');
-                const resultItems = document.querySelectorAll('.result-item');
-                
-                checkboxes.forEach((checkbox, index) => {
-                    checkbox.checked = true;
-                    this.selectedResults.add(index);
-                    resultItems[index].classList.add('selected');
-                });
-                
-                this.updateSelectionCount();
-            }
-
-            clearSelection() {
-                this.selectedResults.clear();
-                const checkboxes = document.querySelectorAll('.result-checkbox');
-                const resultItems = document.querySelectorAll('.result-item');
-                
-                checkboxes.forEach((checkbox, index) => {
-                    checkbox.checked = false;
-                    resultItems[index].classList.remove('selected');
-                });
-                
-                this.updateSelectionCount();
-            }
-
-            updateSelectionCount() {
-                const selectedCount = document.getElementById('selectedCount');
-                const selectAllCheckbox = document.getElementById('selectAllCheckbox');
-                const downloadSelectedApaBtn = document.getElementById('downloadSelectedApaBtn');
-                const downloadSelectedGostBtn = document.getElementById('downloadSelectedGostBtn');
-                const downloadSelectedTxtBtn = document.getElementById('downloadSelectedTxtBtn');
-                
-                if (selectedCount) {
-                    selectedCount.textContent = `Выбрано: ${this.selectedResults.size}`;
-                }
-                
-                if (selectAllCheckbox) {
-                    selectAllCheckbox.checked = this.selectedResults.size === this.results.length && this.results.length > 0;
-                }
-                
-                // Показываем/скрываем кнопки скачивания в зависимости от количества выбранных
-                const hasSelected = this.selectedResults.size > 0;
-                if (downloadSelectedApaBtn) downloadSelectedApaBtn.style.display = hasSelected ? 'flex' : 'none';
-                if (downloadSelectedGostBtn) downloadSelectedGostBtn.style.display = hasSelected ? 'flex' : 'none';
-                if (downloadSelectedTxtBtn) downloadSelectedTxtBtn.style.display = hasSelected ? 'flex' : 'none';
-            }
-
-            downloadSelectedResults(format = 'txt') {
-                if (this.selectedResults.size === 0) {
-                    alert('Выберите хотя бы одну публикацию для скачивания.\n\nИспользуйте чекбоксы рядом с публикациями для выбора.');
-                    return;
-                }
-                
-                const selectedResults = Array.from(this.selectedResults).map(index => this.results[index]);
-                console.log(`Скачивание ${selectedResults.length} выбранных публикаций в формате ${format.toUpperCase()}`);
-                this.downloadResults(format, selectedResults);
-            }
-
-            showLoading() {
-                const resultsPanel = document.getElementById('resultsPanel');
-                const resultsList = document.getElementById('resultsList');
-                const resultsLimit = document.getElementById('resultsLimit').value;
-                
-                resultsPanel.style.display = 'block';
-                
-                let loadingMessage = 'Поиск научных публикаций...';
-                if (parseInt(resultsLimit) >= 300) {
-                    loadingMessage = 'Поиск большого количества публикаций...<br><small style="color: #666;">Это может занять 30-60 секунд</small>';
-                } else if (parseInt(resultsLimit) >= 200) {
-                    loadingMessage = 'Поиск публикаций...<br><small style="color: #666;">Это может занять 15-30 секунд</small>';
-                }
-                
-                resultsList.innerHTML = `
-                    <div class="loading">
-                        <div class="spinner"></div>
-                        <div>${loadingMessage}</div>
-                    </div>
-                `;
-            }
-
-            showError(message) {
-                const resultsPanel = document.getElementById('resultsPanel');
-                const resultsList = document.getElementById('resultsList');
-                
-                resultsPanel.style.display = 'block';
-                resultsList.innerHTML = `
-                    <div class="error">
-                        ${message.replace(/\n/g, '<br>')}
-                        <div style="margin-top: 15px;">
-                            <button class="search-btn" onclick="window.sciSearcher.retrySearch()" style="margin-right: 10px;">
-                                🔄 Попробовать снова
-                            </button>
-                            <button class="search-btn" onclick="window.sciSearcher.tryAlternativeSearch()" style="background: #28a745; margin-right: 10px;">
-                                🔍 Альтернативный поиск (25 результатов)
-                            </button>
-                            <button class="search-btn" onclick="window.sciSearcher.searchWithoutYearFilters()" style="background: #6f42c1; margin-right: 10px;">
-                                📅 Поиск без фильтров по годам
-                            </button>
-                            <button class="search-btn" onclick="window.sciSearcher.runDiagnostics()" style="background: #17a2b8;">
-                                🔧 Диагностика
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }
-
-            downloadResults(format = 'txt', selectedResults = null) {
-                const resultsToDownload = selectedResults || this.results;
-                
-                if (resultsToDownload.length === 0) {
-                    alert('Нет результатов для скачивания');
-                    return;
-                }
-
-                let text, filename;
-                
-                switch(format) {
-                    case 'apa':
-                        text = this.formatResultsForAPA(resultsToDownload);
-                        filename = `sci-search-results-apa-${new Date().toISOString().split('T')[0]}.txt`;
-                        break;
-                    case 'gost':
-                        text = this.formatResultsForGOST(resultsToDownload);
-                        filename = `sci-search-results-gost-${new Date().toISOString().split('T')[0]}.txt`;
-                        break;
-                    case 'bibtex':
-                        text = this.formatResultsForBibTeX(resultsToDownload);
-                        filename = `sci-search-results-bibtex-${new Date().toISOString().split('T')[0]}.bib`;
-                        break;
-                    default:
-                        text = this.formatResultsForExport(resultsToDownload);
-                        filename = `sci-search-results-${new Date().toISOString().split('T')[0]}.txt`;
-                }
-
-                const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }
-
-            copyResults() {
-                if (this.results.length === 0) {
-                    alert('Нет результатов для копирования');
-                    return;
-                }
-
-                const text = this.formatResultsForExport();
-                navigator.clipboard.writeText(text).then(() => {
-                    alert('Результаты скопированы в буфер обмена!');
-                }).catch(err => {
-                    console.error('Ошибка копирования: ', err);
-                    alert('Ошибка при копировании. Попробуйте скачать файл.');
-                });
-            }
-
-            formatResultsForExport(results = null) {
-                const resultsToFormat = results || this.results;
-                const keywords = document.getElementById('keywords').value;
-                const startYear = document.getElementById('startYear').value;
-                const endYear = document.getElementById('endYear').value;
-                
-                let text = `РЕЗУЛЬТАТЫ ПОИСКА НАУЧНОЙ ЛИТЕРАТУРЫ\n`;
-                text += `Ключевые слова: ${keywords}\n`;
-                if (startYear || endYear) {
-                    text += `Период: ${startYear || 'не указан'} - ${endYear || 'не указан'}\n`;
-                }
-                text += `Дата поиска: ${new Date().toLocaleString('ru-RU')}\n`;
-                text += `Найдено результатов: ${resultsToFormat.length}\n\n`;
-                text += `========================================\n\n`;
-
-                resultsToFormat.forEach((work, index) => {
-                    const title = work.title || 'Без названия';
-                    
-                    // Улучшенное извлечение авторов для экспорта
-                    let authors = 'Авторы не указаны';
-                    
-                    if (work.authorships && work.authorships.length > 0) {
-                        const authorNames = work.authorships
-                            .map(authorship => authorship?.author?.display_name || 
-                                               authorship?.author?.name ||
-                                               authorship?.author?.title ||
-                                               authorship?.display_name)
-                            .filter(name => name && name.trim() !== '');
-                        
-                        if (authorNames.length > 0) {
-                            authors = authorNames.join(', ');
-                        }
-                    } else if (work.authors && work.authors.length > 0) {
-                        const authorNames = work.authors
-                            .map(author => author?.display_name || author?.name || author?.title)
-                            .filter(name => name && name.trim() !== '');
-                        
-                        if (authorNames.length > 0) {
-                            authors = authorNames.join(', ');
-                        }
-                    } else if (work.author) {
-                        authors = work.author.display_name || work.author.name || work.author.title || 'Автор не указан';
-                    }
-                    
-                    const journal = work.primary_location?.source?.display_name || 'Журнал не указан';
-                    const year = work.publication_year || 'Год не указан';
-                    const doi = work.doi || work.id;
-
-                    text += `${index + 1}. ${title}\n`;
-                    text += `Авторы: ${authors}\n`;
-                    text += `Журнал: ${journal}\n`;
-                    text += `Год: ${year}\n`;
-                    text += `DOI: ${doi}\n\n`;
-                });
-
-                return text;
-            }
-
-            formatResultsForAPA(results = null) {
-                const resultsToFormat = results || this.results;
-                    const keywords = document.getElementById('keywords').value;
-                    const startYear = document.getElementById('startYear').value;
-                    const endYear = document.getElementById('endYear').value;
-                
-                let searchInfo = `Search keywords: ${keywords}\n`;
-                    if (startYear || endYear) {
-                        searchInfo += `Publication period: ${startYear || 'not specified'} - ${endYear || 'not specified'}\n`;
-                }
-                
-                let text = `REFERENCES (APA FORMAT)\n`;
-                text += searchInfo;
-                text += `Search date: ${new Date().toLocaleString('en-US')}\n`;
-                text += `Total results: ${resultsToFormat.length}\n\n`;
-
-                resultsToFormat.forEach((work, index) => {
-                    const title = work.title || 'Untitled';
-                    const year = work.publication_year || work.year || 'n.d.';
-                    const doi = work.doi || '';
-                    const volume = work.biblio?.volume || work.volume || '';
-                    const issue = work.biblio?.issue || work.issue || '';
-                    // Format pages with range (first_page - last_page)
-                    // OpenAlex API provides first_page and last_page in biblio object
-                    // If both are available and different, show range (e.g., "215–220")
-                    // If only first_page is available, show single page
-                    // If no page info is available, pages remains empty
-                    let pages = '';
-                    const firstPage = work.biblio?.first_page || '';
-                    const lastPage = work.biblio?.last_page || '';
-                    if (firstPage && lastPage && firstPage !== lastPage) {
-                        pages = `${firstPage}–${lastPage}`;
-                    } else if (firstPage) {
-                        pages = firstPage;
-                    } else if (work.pages) {
-                        pages = work.pages;
-                    }
-
-                    // Format authors in APA style with better null checks
-                    let authorString = '';
-                    const authors = work.authorships || [];
-                    
-                    if (authors.length === 0) {
-                        // Попробуем альтернативные источники авторов
-                        if (work.authors && work.authors.length > 0) {
-                            const validAuthors = work.authors
-                                .map(author => author?.display_name || author?.name || author?.title)
-                                .filter(name => name && name.trim() !== '');
-                            
-                            if (validAuthors.length > 0) {
-                                if (validAuthors.length === 1) {
-                                    const name = validAuthors[0];
-                                    const lastName = name.split(',')[0] || name.split(' ').pop();
-                                    const firstName = name.split(',')[1]?.trim() || name.split(' ')[0];
-                                    authorString = `${lastName}, ${firstName.charAt(0).toUpperCase()}.`;
-                                } else if (validAuthors.length <= 7) {
-                                    const formattedAuthors = validAuthors.map(name => {
-                                        const lastName = name.split(',')[0] || name.split(' ').pop();
-                                        const firstName = name.split(',')[1]?.trim() || name.split(' ')[0];
-                                        return `${lastName}, ${firstName.charAt(0).toUpperCase()}.`;
-                                    });
-                                    authorString = formattedAuthors.join(', ');
-                                } else {
-                                    const firstAuthor = validAuthors[0];
-                                    const lastName = firstAuthor.split(',')[0] || firstAuthor.split(' ').pop();
-                                    const firstName = firstAuthor.split(',')[1]?.trim() || firstAuthor.split(' ')[0];
-                                    authorString = `${lastName}, ${firstName.charAt(0).toUpperCase()}., et al.`;
-                                }
-                            } else {
-                                authorString = 'Anonymous';
-                            }
-                        } else {
-                            authorString = 'Anonymous';
-                        }
-                    } else {
-                        const validAuthors = authors
-                            .map(authorship => authorship?.author?.display_name || 
-                                               authorship?.author?.name ||
-                                               authorship?.author?.title ||
-                                               authorship?.display_name)
-                            .filter(name => name && name.trim() !== '');
-                        
-                        if (validAuthors.length === 0) {
-                            authorString = 'Anonymous';
-                        } else if (validAuthors.length === 1) {
-                            const name = validAuthors[0];
-                            const lastName = name.split(',')[0] || name.split(' ').pop();
-                            const firstName = name.split(',')[1]?.trim() || name.split(' ')[0];
-                            authorString = `${lastName}, ${firstName.charAt(0).toUpperCase()}.`;
-                        } else if (validAuthors.length <= 7) {
-                            const formattedAuthors = validAuthors.map(name => {
-                                const lastName = name.split(',')[0] || name.split(' ').pop();
-                                const firstName = name.split(',')[1]?.trim() || name.split(' ')[0];
-                                return `${lastName}, ${firstName.charAt(0).toUpperCase()}.`;
-                            });
-                            authorString = formattedAuthors.join(', ');
-                        } else {
-                            const firstAuthor = validAuthors[0];
-                            const lastName = firstAuthor.split(',')[0] || firstAuthor.split(' ').pop();
-                            const firstName = firstAuthor.split(',')[1]?.trim() || firstAuthor.split(' ')[0];
-                            authorString = `${lastName}, ${firstName.charAt(0).toUpperCase()}., et al.`;
-                        }
-                    }
-
-                    // Format journal info
-                    const journal = work.primary_location?.source?.display_name || 'Unknown Journal';
-                    let journalInfo = journal;
-                    if (volume) {
-                        journalInfo += `, ${volume}`;
-                        if (issue) {
-                            journalInfo += `(${issue})`;
-                        }
-                        if (pages) {
-                            journalInfo += `, ${pages}`;
-                        } else {
-                            // Если есть том/номер, но нет страниц, добавляем примечание
-                            journalInfo += `, [pages not specified]`;
-                        }
-                    }
-
-                    // Construct APA reference
-                    text += `${authorString} (${year}). ${title}. ${journalInfo}`;
-                    if (doi) {
-                        // Убираем дублирование https://doi.org/ если оно уже есть
-                        const cleanDoi = doi.startsWith('https://doi.org/') ? doi : `https://doi.org/${doi}`;
-                        text += `. ${cleanDoi}`;
-                    }
-                    text += '.\n\n';
-                });
-
-                return text;
-            }
-
-
-            formatResultsForGOST(results = null) {
-                const resultsToFormat = results || this.results;
-                    const keywords = document.getElementById('keywords').value;
-                    const startYear = document.getElementById('startYear').value;
-                    const endYear = document.getElementById('endYear').value;
-                
-                let searchInfo = `Ключевые слова поиска: ${keywords}\n`;
-                    if (startYear || endYear) {
-                        searchInfo += `Период публикации: ${startYear || 'не указан'} - ${endYear || 'не указан'}\n`;
-                }
-                
-                let text = `СПИСОК ЛИТЕРАТУРЫ (ГОСТ 7.1-2003)\n`;
-                text += searchInfo;
-                text += `Дата поиска: ${new Date().toLocaleString('ru-RU')}\n`;
-                text += `Всего результатов: ${resultsToFormat.length}\n\n`;
-
-                resultsToFormat.forEach((work, index) => {
-                    const title = work.title || 'Без названия';
-                    const year = work.publication_year || work.year || 'б.г.';
-                    const doi = work.doi || '';
-                    const volume = work.biblio?.volume || work.volume || '';
-                    const issue = work.biblio?.issue || work.issue || '';
-                    // Format pages with range (first_page - last_page)
-                    // OpenAlex API provides first_page and last_page in biblio object
-                    // If both are available and different, show range (e.g., "215–220")
-                    // If only first_page is available, show single page
-                    // If no page info is available, pages remains empty
-                    let pages = '';
-                    const firstPage = work.biblio?.first_page || '';
-                    const lastPage = work.biblio?.last_page || '';
-                    if (firstPage && lastPage && firstPage !== lastPage) {
-                        pages = `${firstPage}–${lastPage}`;
-                    } else if (firstPage) {
-                        pages = firstPage;
-                    } else if (work.pages) {
-                        pages = work.pages;
-                    }
-
-                    // Format authors in GOST style with better null checks
-                    let authorString = '';
-                    const authors = work.authorships || [];
-                    
-                    if (authors.length === 0) {
-                        authorString = 'Аноним';
-                    } else {
-                        const validAuthors = authors
-                            .map(authorship => authorship?.author?.display_name)
-                            .filter(name => name && name.trim() !== '');
-                        
-                        if (validAuthors.length === 0) {
-                            authorString = 'Аноним';
-                        } else if (validAuthors.length === 1) {
-                            authorString = validAuthors[0];
-                        } else if (validAuthors.length <= 3) {
-                            authorString = validAuthors.join(', ');
-                        } else {
-                            authorString = `${validAuthors[0]} [и др.]`;
-                        }
-                    }
-
-                    // Format journal info
-                    const journal = work.primary_location?.source?.display_name || 'Неизвестный журнал';
-                    let journalInfo = journal;
-                    if (volume) {
-                        journalInfo += `. – ${year}. – Т. ${volume}`;
-                        if (issue) {
-                            journalInfo += `, № ${issue}`;
-                        }
-                        if (pages) {
-                            journalInfo += `. – С. ${pages}`;
-                        } else {
-                            // Если есть том/номер, но нет страниц, добавляем примечание
-                            journalInfo += `. – [Страницы не указаны]`;
-                        }
-                    } else {
-                        journalInfo += `. – ${year}`;
-                    }
-
-                    // Construct GOST reference
-                    text += `${authorString} ${title} // ${journalInfo}`;
-                    if (doi) {
-                        // Убираем дублирование https://doi.org/ если оно уже есть
-                        const cleanDoi = doi.startsWith('https://doi.org/') ? doi : `https://doi.org/${doi}`;
-                        text += `. – DOI: ${cleanDoi}`;
-                    }
-                    text += '.\n\n';
-                });
-
-                return text;
-            }
-
-            formatResultsForBibTeX(results = null) {
-                const resultsToFormat = results || this.results;
-                
-                let text = `% BibTeX entries generated by Sci-Searcher\n`;
-                text += `% Generated on: ${new Date().toLocaleString('en-US')}\n`;
-                text += `% Total entries: ${resultsToFormat.length}\n\n`;
-
-                resultsToFormat.forEach((work, index) => {
-                    const title = work.title || 'Untitled';
-                    const year = work.publication_year || work.year || 'n.d.';
-                    const doi = work.doi || '';
-                    const volume = work.biblio?.volume || work.volume || '';
-                    const issue = work.biblio?.issue || work.issue || '';
-                    
-                    // Format pages with range
-                    let pages = '';
-                    const firstPage = work.biblio?.first_page || '';
-                    const lastPage = work.biblio?.last_page || '';
-                    if (firstPage && lastPage && firstPage !== lastPage) {
-                        pages = `${firstPage}--${lastPage}`;
-                    } else if (firstPage) {
-                        pages = firstPage;
-                    } else if (work.pages) {
-                        pages = work.pages;
-                    }
-
-                    // Format authors
-                    let authorString = '';
-                    const authors = work.authorships || [];
-                    
-                    if (authors.length === 0) {
-                        authorString = 'Anonymous';
-                    } else {
-                        const validAuthors = authors
-                            .map(authorship => authorship?.author?.display_name)
-                            .filter(name => name && name.trim() !== '');
-                        
-                        if (validAuthors.length === 0) {
-                            authorString = 'Anonymous';
-                        } else {
-                            authorString = validAuthors.join(' and ');
-                        }
-                    }
-
-                    // Journal name
-                    const journal = work.primary_location?.source?.display_name || 'Unknown Journal';
-                    
-                    // Generate BibTeX key
-                    const bibtexKey = `work${index + 1}_${year}`;
-                    
-                    // Determine entry type
-                    const sourceType = work.primary_location?.source?.type;
-                    let entryType = 'article';
-                    if (sourceType === 'book' || sourceType === 'monograph') {
-                        entryType = 'book';
-                    } else if (sourceType === 'proceedings') {
-                        entryType = 'inproceedings';
-                    }
-
-                    text += `@${entryType}{${bibtexKey},\n`;
-                    text += `  title = {${title}},\n`;
-                    text += `  author = {${authorString}},\n`;
-                    text += `  journal = {${journal}},\n`;
-                    text += `  year = {${year}},\n`;
-                    
-                    if (volume) {
-                        text += `  volume = {${volume}},\n`;
-                    }
-                    if (issue) {
-                        text += `  number = {${issue}},\n`;
-                    }
-                    if (pages) {
-                        text += `  pages = {${pages}},\n`;
-                    }
-                    if (doi) {
-                        text += `  doi = {${doi}},\n`;
-                    }
-                    
-                    text += `}\n\n`;
-                });
-
-                return text;
-            }
-
-            async checkApiStatus() {
-                const statusElement = document.getElementById('apiStatus');
-                
-                try {
-                    // Простой тестовый запрос к OpenAlex API
-                    const response = await fetch('https://api.openalex.org/works?search=test&per-page=1', {
-                        method: 'GET',
-                        headers: {
-                            'Accept': 'application/json',
-                            'User-Agent': 'Sci-Searcher/1.0 (Educational Research Tool)'
-                        }
-                    });
-                    
-                    if (response.ok) {
-                        statusElement.textContent = 'Подключен ✅';
-                        statusElement.style.color = '#28a745';
-                    } else if (response.status === 403) {
-                        statusElement.textContent = 'Ограничен ⚠️';
-                        statusElement.style.color = '#ffc107';
-                    } else {
-                        statusElement.textContent = 'Ошибка сервера ⚠️';
-                        statusElement.style.color = '#ffc107';
-                    }
-                } catch (error) {
-                    if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
-                        statusElement.textContent = 'Сетевая ошибка ❌';
-                        statusElement.style.color = '#dc3545';
-                    } else {
-                        statusElement.textContent = 'Недоступен ❌';
-                        statusElement.style.color = '#dc3545';
-                    }
-                }
-            }
-
-            retrySearch() {
-                // Повторяем последний поиск
-                const form = document.getElementById('openalexForm');
-                const event = new Event('submit');
-                form.dispatchEvent(event);
-            }
-
-            async tryAlternativeSearch() {
-                // Пробуем альтернативный поиск с минимальными параметрами
-                const keywords = document.getElementById('keywords').value.trim();
-                
-                if (!keywords) {
-                    alert('Пожалуйста, введите ключевые слова для поиска');
-                    return;
-                }
-
-                this.showLoading();
-                
-                try {
-                    // Простой запрос без фильтров по годам и с минимальным количеством результатов
-                    const url = `https://api.openalex.org/works?search=${encodeURIComponent(keywords)}&per-page=25&sort=publication_date:desc&data_version=2&select=id,title,authorships.author.display_name,authorships.author.id,publication_year,primary_location.source.display_name,doi,abstract_inverted_index,abstract,description,summary,biblio.first_page,biblio.last_page,landing_page_url`;
-                    
-                    console.log('Альтернативный поиск URL:', url);
-                    
-                    const response = await fetch(url, {
-                        method: 'GET',
-                        headers: {
-                            'Accept': 'application/json',
-                            'User-Agent': 'Sci-Searcher/1.0 (Educational Research Tool)'
-                        }
-                    });
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log('Альтернативный поиск успешен:', data);
-                        this.displayResults(data.results || []);
-                } else {
-                        throw new Error(`Альтернативный поиск также не удался. Статус: ${response.status}`);
-                    }
-                } catch (error) {
-                    if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
-                        this.showError('Ошибка сетевого подключения. Возможные решения:\n\n' +
-                            '• Проверить интернет-соединение\n' +
-                            '• Отключить VPN или антивирус временно\n' +
-                            '• Попробовать другой браузер\n' +
-                            '• Проверить настройки файрвола\n' +
-                            '• Попробовать позже или обратиться к разработчику\n' +
-                            '• Контакты: pavel.alekseev.gasu@gmail.com');
-                    } else {
-                        this.showError('К сожалению, поиск временно недоступен. Возможные решения:\n\n' +
-                            '• Подождать 10-15 минут и повторить попытку\n' +
-                            '• Проверить интернет-соединение\n' +
-                            '• Попробовать позже или обратиться к разработчику\n' +
-                            '• Использовать VPN для смены IP-адреса');
-                    }
-                }
-            }
-
-            async searchWithoutYearFilters() {
-                // Поиск без фильтров по годам
-                const keywords = document.getElementById('keywords').value.trim();
-                const resultsLimit = document.getElementById('resultsLimit').value;
-                
-                if (!keywords) {
-                    alert('Пожалуйста, введите ключевые слова для поиска');
-                    return;
-                }
-
-                this.showLoading();
-                
-                try {
-                    // Поиск без фильтров по годам
-                    const results = await this.searchOpenAlex(keywords, '', '', resultsLimit);
-                    this.displayResults(results);
-                } catch (error) {
-                    this.showError('Ошибка при поиске без фильтров: ' + error.message);
-                }
-            }
-
-            async runDiagnostics() {
-                const resultsPanel = document.getElementById('resultsPanel');
-                const resultsList = document.getElementById('resultsList');
-                
-                resultsList.innerHTML = `
-                    <div class="loading">
-                        <div class="spinner"></div>
-                        <div>Запуск диагностики...</div>
-                    </div>
-                `;
-                
-                const diagnostics = [];
-                
-                // Проверка 1: Базовое подключение к интернету
-                try {
-                    const testResponse = await fetch('https://httpbin.org/get', { method: 'GET' });
-                    if (testResponse.ok) {
-                        diagnostics.push('✅ Базовое интернет-соединение работает');
-                    } else {
-                        diagnostics.push('❌ Проблемы с базовым интернет-соединением');
-                    }
-                } catch (error) {
-                    diagnostics.push('❌ Нет интернет-соединения');
-                }
-                
-                // Проверка 2: Подключение к OpenAlex API
-                try {
-                    const openAlexResponse = await fetch('https://api.openalex.org/works?search=test&per-page=1&data_version=2', {
-                        method: 'GET',
-                        headers: {
-                            'Accept': 'application/json',
-                            'User-Agent': 'Sci-Searcher/1.0 (Educational Research Tool)'
-                        }
-                    });
-                    
-                    if (openAlexResponse.ok) {
-                        diagnostics.push('✅ OpenAlex API доступен');
-                    } else if (openAlexResponse.status === 403) {
-                        diagnostics.push('⚠️ OpenAlex API ограничен (статус: 403)');
-                    } else {
-                        diagnostics.push(`❌ OpenAlex API недоступен (статус: ${openAlexResponse.status})`);
-                    }
-                } catch (error) {
-                    if (error.message.includes('Failed to fetch')) {
-                        diagnostics.push('❌ Не удается подключиться к OpenAlex API (CORS или сетевые проблемы)');
-                    } else {
-                        diagnostics.push(`❌ Ошибка при подключении к OpenAlex API: ${error.message}`);
-                    }
-                }
-                
-                // Проверка 3: Информация о браузере
-                const userAgent = navigator.userAgent;
-                const isChrome = userAgent.includes('Chrome');
-                const isFirefox = userAgent.includes('Firefox');
-                const isSafari = userAgent.includes('Safari') && !userAgent.includes('Chrome');
-                const isEdge = userAgent.includes('Edge');
-                
-                let browserInfo = '';
-                if (isChrome) browserInfo = 'Chrome';
-                else if (isFirefox) browserInfo = 'Firefox';
-                else if (isSafari) browserInfo = 'Safari';
-                else if (isEdge) browserInfo = 'Edge';
-                else browserInfo = 'Неизвестный браузер';
-                
-                diagnostics.push(`ℹ️ Браузер: ${browserInfo}`);
-                diagnostics.push(`ℹ️ User Agent: ${userAgent.substring(0, 100)}...`);
-                
-                // Отображение результатов диагностики
-                resultsList.innerHTML = `
-                    <div class="error">
-                        <h3>🔧 Результаты диагностики</h3>
-                        <div style="text-align: left; margin: 20px 0;">
-                            ${diagnostics.map(d => `<div style="margin: 10px 0;">${d}</div>`).join('')}
-                        </div>
-                        <div style="margin-top: 20px;">
-                            <button class="search-btn" onclick="window.sciSearcher.retrySearch()" style="margin-right: 10px;">
-                                🔄 Попробовать поиск снова
-                            </button>
-                            <button class="search-btn" onclick="window.sciSearcher.tryAlternativeSearch()" style="background: #28a745;">
-                                🔍 Альтернативный поиск
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }
-
-            // Функция для анализа языков в текущих результатах
-            analyzeLanguages() {
-                if (!this.currentResults || this.currentResults.length === 0) {
-                    console.log('Нет результатов для анализа языков');
-                    return;
-                }
-                
-                console.log('=== АНАЛИЗ ЯЗЫКОВ В ТЕКУЩИХ РЕЗУЛЬТАТАХ ===');
-                
-                const allLanguages = new Set();
-                const languageStats = {};
-                
-                this.currentResults.forEach(work => {
-                    const lang = work.language || 'не указан';
-                    allLanguages.add(lang);
-                    languageStats[lang] = (languageStats[lang] || 0) + 1;
-                });
-                
-                console.log('Все языки в текущих результатах:', Array.from(allLanguages));
-                console.log('Статистика языков:', languageStats);
-                
-                // Показываем примеры для каждого языка
-                Object.keys(languageStats).forEach(lang => {
-                    const examples = this.currentResults.filter(work => (work.language || 'не указан') === lang).slice(0, 3);
-                    console.log(`Примеры для языка "${lang}":`, examples.map(w => w.title?.substring(0, 50) + '...'));
-                });
-                
-                console.log('=== КОНЕЦ АНАЛИЗА ===');
-            }
-
-            // Методы кэширования
-            getCacheKey(keywords, startYear, endYear, resultsLimit, sortOrder, filterType, language, openAccess) {
-                return `${keywords}_${startYear}_${endYear}_${resultsLimit}_${sortOrder}_${filterType}_${language}_${openAccess}`;
-            }
-
-            getFromCache(key) {
-                const cached = this.cache.get(key);
-                if (cached && Date.now() - cached.timestamp < this.cacheExpiry) {
-                    console.log('Используем кэшированные результаты');
-                    return cached.data;
-                }
-                return null;
-            }
-
-            setCache(key, data) {
-                this.cache.set(key, {
-                    data: data,
-                    timestamp: Date.now()
-                });
-                console.log('Результаты сохранены в кэш');
-            }
-
-        }
-
-        // Функции управления настройками
-        function loadSettings() {
-            // Загружаем настройки поиска
-            const savedSettings = localStorage.getItem('searchSettings');
-            if (savedSettings) {
-                try {
-                    const settings = JSON.parse(savedSettings);
-                    if (settings.sortOrder) document.getElementById('sortOrder').value = settings.sortOrder;
-                    if (settings.filterType) document.getElementById('filterType').value = settings.filterType;
-                    if (settings.language) document.getElementById('language').value = settings.language;
-                    if (settings.openAccess) document.getElementById('openAccess').value = settings.openAccess;
-                    if (settings.resultsLimit) document.getElementById('resultsLimit').value = settings.resultsLimit;
-                } catch (e) {
-                    console.warn('Ошибка загрузки настроек:', e);
-                }
-            }
-        }
-
-        function saveSettings() {
-            const settings = {
-                sortOrder: document.getElementById('sortOrder').value,
-                filterType: document.getElementById('filterType').value,
-                language: document.getElementById('language').value,
-                openAccess: document.getElementById('openAccess').value,
-                resultsLimit: document.getElementById('resultsLimit').value
+            const newUser = {
+                id: Date.now(),
+                name,
+                email,
+                password,
+                class: userClass,
+                registeredAt: new Date().toISOString()
             };
-            localStorage.setItem('searchSettings', JSON.stringify(settings));
+
+            users.push(newUser);
+            localStorage.setItem('lexicon_users', JSON.stringify(users));
+
+            alert('Регистрация успешна! Теперь вы можете войти в систему.');
+            switchAuthTab('login');
+            
+            // Очищаем форму
+            document.getElementById('registerForm').reset();
         }
 
-        // Горячие клавиши
-        document.addEventListener('keydown', (e) => {
-            // Ctrl/Cmd + Enter - поиск
-            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                e.preventDefault();
-                const searchBtn = document.getElementById('openalexSearchBtn');
-                if (searchBtn) searchBtn.click();
-            }
+        // Вход
+        function login(event) {
+            event.preventDefault();
             
-            // Escape - очистка результатов
-            if (e.key === 'Escape') {
-                const resultsPanel = document.getElementById('resultsPanel');
-                if (resultsPanel && resultsPanel.style.display !== 'none') {
-                    resultsPanel.style.display = 'none';
-                }
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                showDashboard();
+                alert(`Добро пожаловать, ${user.name}!`);
+            } else {
+                alert('Неверный email или пароль!');
+            }
+        }
+
+        // Выход
+        function logout() {
+            currentUser = null;
+            document.getElementById('authSection').classList.remove('hidden');
+            document.getElementById('dashboard').classList.remove('active');
+            document.getElementById('adminPanel').classList.remove('active');
+        }
+
+        // Показать панель управления
+        function showDashboard() {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('dashboard').classList.add('active');
+            
+            // Обновляем информацию о пользователе
+            document.getElementById('userName').textContent = `Добро пожаловать, ${currentUser.name}!`;
+            document.getElementById('userClass').textContent = `Класс: ${currentUser.class}`;
+            
+            // Обновляем статистику
+            updateStats();
+        }
+
+        // Обновление статистики
+        function updateStats() {
+            const userId = currentUser.id;
+            const progress = userProgress[userId] || {};
+            
+            let totalTasks = 0;
+            let completedTasks = 0;
+            
+            // Подсчитываем общую статистику
+            Object.keys(progress).forEach(module => {
+                const moduleProgress = progress[module] || {};
+                totalTasks += moduleProgress.total || 0;
+                completedTasks += moduleProgress.completed || 0;
+            });
+
+            document.getElementById('totalTasks').textContent = totalTasks;
+            document.getElementById('completedTasks').textContent = completedTasks;
+            
+            const successRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+            document.getElementById('successRate').textContent = successRate + '%';
+            
+            // Определяем уровень
+            let level = 'Новичок';
+            if (successRate >= 80) level = 'Эксперт';
+            else if (successRate >= 60) level = 'Продвинутый';
+            else if (successRate >= 40) level = 'Средний';
+            else if (successRate >= 20) level = 'Начинающий';
+            
+            document.getElementById('currentLevel').textContent = level;
+        }
+
+        // Открытие модуля
+        function openModule(moduleName) {
+            alert(`Открывается модуль: ${moduleName}\n\nЗдесь будут задания и тесты по выбранной теме.`);
+            // Здесь будет логика открытия конкретного модуля
+        }
+
+        // Переключение админ-панели
+        function toggleAdminPanel() {
+            const panel = document.getElementById('adminPanel');
+            panel.classList.toggle('active');
+        }
+
+        // Добавление нового задания
+        function addNewTask(event) {
+            event.preventDefault();
+            
+            const module = document.getElementById('taskModule').value;
+            const title = document.getElementById('taskTitle').value;
+            const description = document.getElementById('taskDescription').value;
+            const content = document.getElementById('taskContent').value;
+
+            const newTask = {
+                id: Date.now(),
+                module,
+                title,
+                description,
+                content,
+                createdAt: new Date().toISOString(),
+                createdBy: currentUser.id
+            };
+
+            tasks.push(newTask);
+            localStorage.setItem('lexicon_tasks', JSON.stringify(tasks));
+
+            alert('Задание успешно добавлено!');
+            document.getElementById('addTaskForm').reset();
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Проверяем, есть ли сохраненный пользователь
+            const savedUser = localStorage.getItem('lexicon_current_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showDashboard();
             }
         });
 
-        // Инициализация приложения
-        document.addEventListener('DOMContentLoaded', () => {
-            // Устанавливаем значения по умолчанию для последних 6 лет
-            const currentYear = new Date().getFullYear();
-            const startYearDefault = currentYear - 5; // Последние 6 лет (включая текущий)
-            
-            const startYearInput = document.getElementById('startYear');
-            const endYearInput = document.getElementById('endYear');
-            
-            if (startYearInput) {
-                startYearInput.placeholder = startYearDefault.toString();
-                // Устанавливаем значение по умолчанию, если поле пустое
-                if (!startYearInput.value) {
-                    startYearInput.value = startYearDefault;
-                }
+        // Сохранение текущего пользователя при выходе
+        window.addEventListener('beforeunload', function() {
+            if (currentUser) {
+                localStorage.setItem('lexicon_current_user', JSON.stringify(currentUser));
             }
-            
-            if (endYearInput) {
-                endYearInput.placeholder = currentYear.toString();
-                // Устанавливаем значение по умолчанию, если поле пустое
-                if (!endYearInput.value) {
-                    endYearInput.value = currentYear;
-                }
-            }
-            
-            // Обновляем отображение текущего года в подсказке
-            const currentYearDisplay = document.getElementById('currentYearDisplay');
-            if (currentYearDisplay) {
-                currentYearDisplay.textContent = currentYear.toString();
-            }
-            
-            loadSettings();
-            window.sciSearcher = new SciSearcher();
-            
-            // Сохраняем настройки при изменении
-            ['sortOrder', 'filterType', 'language', 'openAccess', 'resultsLimit'].forEach(id => {
-                const element = document.getElementById(id);
-                if (element) {
-                    element.addEventListener('change', saveSettings);
-                }
-            });
         });
     </script>
 </body>
