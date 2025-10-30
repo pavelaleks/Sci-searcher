@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Минимальный тест Sci-Searcher</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f0f0f0; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        .form-group { margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .results { margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 4px; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Минимальный тест Sci-Searcher</h1>
+        
+        <form id="testForm">
+            <div class="form-group">
+                <label for="keywords">Ключевые слова:</label>
+                <input type="text" id="keywords" value="машинное обучение" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="startYear">Год начала:</label>
+                <input type="number" id="startYear" value="2020" min="1900" max="2024">
+            </div>
+            
+            <div class="form-group">
+                <label for="endYear">Год окончания:</label>
+                <input type="number" id="endYear" value="2023" min="1900" max="2024">
+            </div>
+            
+            <div class="form-group">
+                <label for="language">Язык:</label>
+                <select id="language">
+                    <option value="all">Все языки</option>
+                    <option value="ru">Русский</option>
+                    <option value="en">Английский</option>
+                    <option value="kk">Казахский</option>
+                </select>
+            </div>
+            
+            <button type="submit">🔍 Поиск</button>
+        </form>
+        
+        <div id="status" class="results" style="display: none;"></div>
+        <div id="results" class="results" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Простая функция поиска без сложной логики
+        async function searchOpenAlex(keywords, startYear, endYear, language = 'all') {
+            console.log('Начинаем поиск:', { keywords, startYear, endYear, language });
+            
+            // Создаем URL для OpenAlex API
+            let url = `https://api.openalex.org/works?search=${encodeURIComponent(keywords)}&per-page=10&data_version=2`;
+            
+            // Добавляем фильтры
+            const filters = [];
+            if (startYear && endYear) {
+                filters.push(`publication_year:${startYear}-${endYear}`);
+            }
+            if (language !== 'all') {
+                filters.push(`language:${language}`);
+            }
+            
+            if (filters.length > 0) {
+                url += `&filter=${filters.join(',')}`;
+            }
+            
+            console.log('URL запроса:', url);
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'User-Agent': 'Sci-Searcher/1.0 (Minimal Test)'
+                    }
+                });
+                
+                console.log('Ответ API:', response.status, response.statusText);
+                
+                if (!response.ok) {
+                    throw new Error(`API ошибка: ${response.status} ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Данные получены:', data);
+                
+                return data.results || [];
+                
+            } catch (error) {
+                console.error('Ошибка поиска:', error);
+                throw error;
+            }
+        }
+        
+        // Функция отображения результатов
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('results');
+            const statusDiv = document.getElementById('status');
+            
+            if (results.length === 0) {
+                resultsDiv.innerHTML = '<p>Результаты не найдены</p>';
+                statusDiv.innerHTML = '<p class="error">❌ Результаты не найдены</p>';
+            } else {
+                let html = `<h3>Найдено результатов: ${results.length}</h3>`;
+                
+                results.forEach((work, index) => {
+                    const title = work.title || 'Без названия';
+                    const authors = work.authorships?.map(a => a.author?.display_name).filter(Boolean).join(', ') || 'Авторы не указаны';
+                    const year = work.publication_year || 'Год не указан';
+                    const journal = work.primary_location?.source?.display_name || 'Журнал не указан';
+                    
+                    html += `
+                        <div style="margin: 15px 0; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            <h4>${index + 1}. ${title}</h4>
+                            <p><strong>Авторы:</strong> ${authors}</p>
+                            <p><strong>Год:</strong> ${year}</p>
+                            <p><strong>Журнал:</strong> ${journal}</p>
+                        </div>
+                    `;
+                });
+                
+                resultsDiv.innerHTML = html;
+                statusDiv.innerHTML = '<p class="success">✅ Поиск выполнен успешно</p>';
+            }
+            
+            resultsDiv.style.display = 'block';
+            statusDiv.style.display = 'block';
+        }
+        
+        // Обработчик формы
+        document.getElementById('testForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const keywords = document.getElementById('keywords').value;
+            const startYear = document.getElementById('startYear').value;
+            const endYear = document.getElementById('endYear').value;
+            const language = document.getElementById('language').value;
+            
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = '<p>🔄 Выполняется поиск...</p>';
+            statusDiv.style.display = 'block';
+            
+            try {
+                const results = await searchOpenAlex(keywords, startYear, endYear, language);
+                displayResults(results);
+            } catch (error) {
+                statusDiv.innerHTML = `<p class="error">❌ Ошибка: ${error.message}</p>`;
+                console.error('Ошибка:', error);
+            }
+        });
+        
+        // Проверка при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Минимальная версия загружена');
+            
+            // Тест подключения к API
+            fetch('https://api.openalex.org/works?search=test&per-page=1')
+                .then(response => {
+                    if (response.ok) {
+                        console.log('✅ API доступен');
+                    } else {
+                        console.log('⚠️ API недоступен:', response.status);
+                    }
+                })
+                .catch(error => {
+                    console.log('❌ Ошибка подключения к API:', error.message);
+                });
+        });
+    </script>
+</body>
+</html>
+

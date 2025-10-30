@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Sci-Searcher</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .debug-section { margin: 20px 0; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .success { border-left: 4px solid #28a745; }
+        .error { border-left: 4px solid #dc3545; }
+        .warning { border-left: 4px solid #ffc107; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
+        button:hover { background: #0056b3; }
+        input { padding: 8px; margin: 5px; border: 1px solid #ddd; border-radius: 4px; }
+        .log { background: #f8f9fa; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug Sci-Searcher</h1>
+    
+    <div class="debug-section">
+        <h3>1. Статус инициализации</h3>
+        <p id="initStatus">Проверяется...</p>
+    </div>
+    
+    <div class="debug-section">
+        <h3>2. Тест простого поиска</h3>
+        <input type="text" id="testKeywords" placeholder="Введите ключевые слова" value="машинное обучение">
+        <button onclick="testSimpleSearch()">Тест поиска</button>
+        <p id="searchResult">Нажмите кнопку для тестирования</p>
+    </div>
+    
+    <div class="debug-section">
+        <h3>3. Проверка элементов формы</h3>
+        <button onclick="checkFormElements()">Проверить элементы</button>
+        <p id="formElements">Нажмите кнопку для проверки</p>
+    </div>
+    
+    <div class="debug-section">
+        <h3>4. Лог консоли</h3>
+        <button onclick="clearLog()">Очистить лог</button>
+        <div id="consoleLog" class="log"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>5. Тест API напрямую</h3>
+        <button onclick="testDirectAPI()">Тест API</button>
+        <p id="apiResult">Нажмите кнопку для тестирования</p>
+    </div>
+
+    <script>
+        let logMessages = [];
+        
+        // Перехватываем console.log для отображения в интерфейсе
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        
+        function addToLog(message, type = 'log') {
+            const timestamp = new Date().toLocaleTimeString();
+            logMessages.push(`[${timestamp}] ${type.toUpperCase()}: ${message}`);
+            updateLogDisplay();
+        }
+        
+        console.log = function(...args) {
+            addToLog(args.join(' '), 'log');
+            originalLog.apply(console, args);
+        };
+        
+        console.error = function(...args) {
+            addToLog(args.join(' '), 'error');
+            originalError.apply(console, args);
+        };
+        
+        console.warn = function(...args) {
+            addToLog(args.join(' '), 'warn');
+            originalWarn.apply(console, args);
+        };
+        
+        function updateLogDisplay() {
+            const logElement = document.getElementById('consoleLog');
+            logElement.innerHTML = logMessages.slice(-20).join('<br>');
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        function clearLog() {
+            logMessages = [];
+            updateLogDisplay();
+        }
+        
+        // Проверка инициализации
+        function checkInitialization() {
+            const initStatus = document.getElementById('initStatus');
+            
+            try {
+                if (typeof SciSearcher === 'undefined') {
+                    initStatus.innerHTML = '❌ Класс SciSearcher не найден';
+                    initStatus.parentElement.className = 'debug-section error';
+                    return false;
+                }
+                
+                if (!window.sciSearcher) {
+                    initStatus.innerHTML = '❌ Экземпляр sciSearcher не создан';
+                    initStatus.parentElement.className = 'debug-section error';
+                    return false;
+                }
+                
+                initStatus.innerHTML = '✅ SciSearcher инициализирован успешно';
+                initStatus.parentElement.className = 'debug-section success';
+                return true;
+            } catch (error) {
+                initStatus.innerHTML = '❌ Ошибка инициализации: ' + error.message;
+                initStatus.parentElement.className = 'debug-section error';
+                return false;
+            }
+        }
+        
+        // Проверка элементов формы
+        function checkFormElements() {
+            const formElements = document.getElementById('formElements');
+            const elements = [
+                'openalexForm',
+                'keywords', 
+                'openalexSearchBtn',
+                'startYear',
+                'endYear',
+                'resultsLimit',
+                'sortOrder',
+                'filterType',
+                'language',
+                'openAccess'
+            ];
+            
+            let found = 0;
+            let missing = [];
+            
+            elements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    found++;
+                } else {
+                    missing.push(id);
+                }
+            });
+            
+            if (missing.length === 0) {
+                formElements.innerHTML = `✅ Все элементы найдены (${found}/${elements.length})`;
+                formElements.parentElement.className = 'debug-section success';
+            } else {
+                formElements.innerHTML = `⚠️ Найдено ${found}/${elements.length} элементов. Отсутствуют: ${missing.join(', ')}`;
+                formElements.parentElement.className = 'debug-section warning';
+            }
+        }
+        
+        // Тест простого поиска
+        async function testSimpleSearch() {
+            const searchResult = document.getElementById('searchResult');
+            const keywords = document.getElementById('testKeywords').value;
+            
+            searchResult.innerHTML = '🔄 Выполняется поиск...';
+            
+            try {
+                if (!window.sciSearcher) {
+                    throw new Error('SciSearcher не инициализирован');
+                }
+                
+                const results = await window.sciSearcher.searchOpenAlex(keywords, 2020, 2023, 10, 'newest', 'all', 'all', 'all');
+                
+                searchResult.innerHTML = `✅ Поиск выполнен успешно! Найдено ${results.length} результатов`;
+                searchResult.parentElement.className = 'debug-section success';
+                
+                console.log('Результаты поиска:', results);
+                
+            } catch (error) {
+                searchResult.innerHTML = `❌ Ошибка поиска: ${error.message}`;
+                searchResult.parentElement.className = 'debug-section error';
+                console.error('Ошибка поиска:', error);
+            }
+        }
+        
+        // Тест API напрямую
+        async function testDirectAPI() {
+            const apiResult = document.getElementById('apiResult');
+            apiResult.innerHTML = '🔄 Тестируем API...';
+            
+            try {
+                const response = await fetch('https://api.openalex.org/works?search=machine%20learning&per-page=5', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'User-Agent': 'Sci-Searcher/1.0 (Debug)'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    apiResult.innerHTML = `✅ API работает! Получено ${data.results?.length || 0} результатов`;
+                    apiResult.parentElement.className = 'debug-section success';
+                    console.log('API ответ:', data);
+                } else {
+                    apiResult.innerHTML = `❌ API ошибка: ${response.status} ${response.statusText}`;
+                    apiResult.parentElement.className = 'debug-section error';
+                }
+            } catch (error) {
+                apiResult.innerHTML = `❌ Ошибка подключения: ${error.message}`;
+                apiResult.parentElement.className = 'debug-section error';
+                console.error('API ошибка:', error);
+            }
+        }
+        
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Debug страница загружена');
+            
+            // Проверяем инициализацию через небольшую задержку
+            setTimeout(() => {
+                checkInitialization();
+                checkFormElements();
+            }, 1000);
+        });
+    </script>
+    
+    <!-- Подключаем основной файл для тестирования -->
+    <script src="index.html"></script>
+</body>
+</html>
+

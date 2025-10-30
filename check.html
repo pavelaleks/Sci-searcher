@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Проверка Sci-Searcher</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .check { margin: 10px 0; padding: 10px; background: white; border-radius: 5px; }
+        .success { border-left: 4px solid green; }
+        .error { border-left: 4px solid red; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Проверка работы Sci-Searcher</h1>
+    
+    <div class="check">
+        <h3>1. Проверка загрузки index.html</h3>
+        <p id="loadStatus">Проверяется...</p>
+    </div>
+    
+    <div class="check">
+        <h3>2. Проверка SciSearcher</h3>
+        <p id="classStatus">Проверяется...</p>
+    </div>
+    
+    <div class="check">
+        <h3>3. Проверка формы</h3>
+        <p id="formStatus">Проверяется...</p>
+    </div>
+    
+    <div class="check">
+        <h3>4. Тест поиска</h3>
+        <button onclick="testSearch()">Тест поиска</button>
+        <p id="testStatus">Нажмите кнопку</p>
+    </div>
+
+    <script>
+        // Проверка через iframe
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = 'index.html';
+        document.body.appendChild(iframe);
+        
+        iframe.onload = function() {
+            document.getElementById('loadStatus').innerHTML = '✅ index.html загружен';
+            document.getElementById('loadStatus').parentElement.className = 'check success';
+            
+            setTimeout(() => {
+                try {
+                    const iframeWindow = iframe.contentWindow;
+                    
+                    if (iframeWindow.sciSearcher) {
+                        document.getElementById('classStatus').innerHTML = '✅ SciSearcher найден';
+                        document.getElementById('classStatus').parentElement.className = 'check success';
+                        
+                        if (iframeWindow.document.getElementById('openalexForm')) {
+                            document.getElementById('formStatus').innerHTML = '✅ Форма найдена';
+                            document.getElementById('formStatus').parentElement.className = 'check success';
+                        } else {
+                            document.getElementById('formStatus').innerHTML = '❌ Форма не найдена';
+                            document.getElementById('formStatus').parentElement.className = 'check error';
+                        }
+                    } else {
+                        document.getElementById('classStatus').innerHTML = '❌ SciSearcher не найден';
+                        document.getElementById('classStatus').parentElement.className = 'check error';
+                    }
+                } catch (e) {
+                    document.getElementById('classStatus').innerHTML = '❌ Ошибка доступа: ' + e.message;
+                    document.getElementById('classStatus').parentElement.className = 'check error';
+                }
+            }, 2000);
+        };
+        
+        async function testSearch() {
+            const testStatus = document.getElementById('testStatus');
+            testStatus.innerHTML = '🔄 Тестируем...';
+            
+            try {
+                const iframeWindow = iframe.contentWindow;
+                if (!iframeWindow.sciSearcher) {
+                    throw new Error('SciSearcher не найден');
+                }
+                
+                const results = await iframeWindow.sciSearcher.searchOpenAlex('машинное обучение', 2020, 2023, 10);
+                
+                testStatus.innerHTML = `✅ Поиск работает! Найдено ${results.length} результатов`;
+                testStatus.parentElement.className = 'check success';
+            } catch (e) {
+                testStatus.innerHTML = `❌ Ошибка: ${e.message}`;
+                testStatus.parentElement.className = 'check error';
+            }
+        }
+    </script>
+</body>
+</html>
+

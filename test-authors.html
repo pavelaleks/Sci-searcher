@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест структуры данных OpenAlex - Авторы</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+        .result { background: #f8f9fa; padding: 10px; margin: 10px 0; border-radius: 4px; font-family: monospace; font-size: 12px; max-height: 500px; overflow-y: auto; }
+        .work-card { background: #e9ecef; padding: 15px; margin: 15px 0; border-radius: 5px; }
+        .authors-info { background: #d1ecf1; padding: 10px; margin: 10px 0; border-radius: 4px; }
+        h3 { color: #333; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Тест структуры данных OpenAlex API - Авторы</h1>
+        
+        <div class="test-section">
+            <h3>Тестовые запросы</h3>
+            <button onclick="testSimpleQuery()">Тест 1: Простой запрос</button>
+            <button onclick="testWithSelect()">Тест 2: С select параметром</button>
+            <button onclick="testWithoutSelect()">Тест 3: Без select (полные данные)</button>
+            <button onclick="testSpecificWork()">Тест 4: Конкретная статья</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>Результаты</h3>
+            <div id="results"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testSimpleQuery() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>🔄 Загрузка данных...</p>';
+            
+            try {
+                const response = await fetch('https://api.openalex.org/works?search=machine%20learning&per-page=3');
+                const data = await response.json();
+                
+                displayResults(data.results, 'Простой запрос (без параметров)');
+            } catch (error) {
+                resultsDiv.innerHTML = `<p style="color: red;">❌ Ошибка: ${error.message}</p>`;
+            }
+        }
+        
+        async function testWithSelect() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>🔄 Загрузка данных...</p>';
+            
+            try {
+                const url = 'https://api.openalex.org/works?search=machine%20learning&per-page=3&select=id,title,authorships';
+                console.log('URL с select:', url);
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                displayResults(data.results, 'С select параметром (authorships)');
+            } catch (error) {
+                resultsDiv.innerHTML = `<p style="color: red;">❌ Ошибка: ${error.message}</p>`;
+            }
+        }
+        
+        async function testWithoutSelect() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>🔄 Загрузка данных...</p>';
+            
+            try {
+                const response = await fetch('https://api.openalex.org/works?search=machine%20learning&per-page=3&data_version=2');
+                const data = await response.json();
+                
+                displayResults(data.results, 'Без select (полные данные, data_version=2)');
+            } catch (error) {
+                resultsDiv.innerHTML = `<p style="color: red;">❌ Ошибка: ${error.message}</p>`;
+            }
+        }
+        
+        async function testSpecificWork() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>🔄 Загрузка данных...</p>';
+            
+            try {
+                // Используем конкретный ID работы для детального анализа
+                const response = await fetch('https://api.openalex.org/works?search=deep learning&per-page=1');
+                const data = await response.json();
+                
+                if (data.results && data.results.length > 0) {
+                    const work = data.results[0];
+                    const workId = work.id;
+                    
+                    // Получаем полные данные работы по ID
+                    const fullResponse = await fetch(workId);
+                    const fullWork = await fullResponse.json();
+                    
+                    resultsDiv.innerHTML = `
+                        <h3>Детальная структура одной статьи:</h3>
+                        <div class="work-card">
+                            <h4>${fullWork.title || 'Без названия'}</h4>
+                            <div class="authors-info">
+                                <strong>📋 Структура authorships:</strong>
+                                <pre>${JSON.stringify(fullWork.authorships, null, 2)}</pre>
+                            </div>
+                            <div class="result">
+                                <strong>🔑 Все ключи объекта work:</strong>
+                                <pre>${JSON.stringify(Object.keys(fullWork), null, 2)}</pre>
+                            </div>
+                            <div class="result">
+                                <strong>📊 Полная структура (первые 3000 символов):</strong>
+                                <pre>${JSON.stringify(fullWork, null, 2).substring(0, 3000)}...</pre>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<p style="color: red;">❌ Ошибка: ${error.message}</p>`;
+            }
+        }
+        
+        function displayResults(works, testName) {
+            const resultsDiv = document.getElementById('results');
+            
+            if (!works || works.length === 0) {
+                resultsDiv.innerHTML = '<p>❌ Результаты не найдены</p>';
+                return;
+            }
+            
+            let html = `<h3>Результаты: ${testName}</h3>`;
+            html += `<p>Найдено статей: ${works.length}</p>`;
+            
+            works.forEach((work, index) => {
+                html += `
+                    <div class="work-card">
+                        <h4>Статья ${index + 1}: ${work.title || 'Без названия'}</h4>
+                        
+                        <div class="authors-info">
+                            <strong>📝 Информация об авторах:</strong>
+                            <p><strong>authorships тип:</strong> ${typeof work.authorships}</p>
+                            <p><strong>authorships является массивом:</strong> ${Array.isArray(work.authorships)}</p>
+                            <p><strong>Количество авторов:</strong> ${work.authorships?.length || 0}</p>
+                            
+                            ${work.authorships && work.authorships.length > 0 ? `
+                                <div style="margin-top: 10px;">
+                                    <strong>Структура первого автора:</strong>
+                                    <pre style="background: white; padding: 10px; border-radius: 4px; overflow-x: auto;">${JSON.stringify(work.authorships[0], null, 2)}</pre>
+                                </div>
+                                <div style="margin-top: 10px;">
+                                    <strong>Попытка извлечения имен:</strong>
+                                    <ul>
+                                        ${work.authorships.map((a, i) => {
+                                            const name = a?.author?.display_name || 
+                                                         a?.author?.name ||
+                                                         a?.display_name ||
+                                                         a?.name ||
+                                                         'Не удалось извлечь';
+                                            return `<li>Автор ${i+1}: ${name} (путь: ${getAuthorPath(a)})</li>`;
+                                        }).join('')}
+                                    </ul>
+                                </div>
+                            ` : '<p style="color: orange;">⚠️ Авторы не найдены в authorships</p>'}
+                        </div>
+                        
+                        <div class="result">
+                            <strong>🔑 Все ключи объекта:</strong>
+                            <pre>${JSON.stringify(Object.keys(work), null, 2)}</pre>
+                        </div>
+                        
+                        <div class="result">
+                            <strong>📋 Полная структура authorships:</strong>
+                            <pre>${JSON.stringify(work.authorships, null, 2)}</pre>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultsDiv.innerHTML = html;
+        }
+        
+        function getAuthorPath(authorship) {
+            const paths = [];
+            if (authorship?.author?.display_name) paths.push('authorship.author.display_name');
+            if (authorship?.author?.name) paths.push('authorship.author.name');
+            if (authorship?.display_name) paths.push('authorship.display_name');
+            if (authorship?.name) paths.push('authorship.name');
+            return paths.length > 0 ? paths.join(', ') : 'Не найдено';
+        }
+        
+        // Автоматически запускаем первый тест при загрузке
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('Страница загружена. Готово к тестированию.');
+        });
+    </script>
+</body>
+</html>
+
