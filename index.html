@@ -1591,24 +1591,56 @@
             }
         }
 
-        // Обновление версии (вызывается при каждом обновлении)
-        updateVersion() {
-            // Генерируем новую версию на основе текущей даты и времени
-            const now = new Date();
-            const timestamp = now.getTime();
-            const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
-            const timeStr = now.toTimeString().slice(0, 8).replace(/:/g, '');
-            
-            // Формат: v1.0.YYYYMMDD.HHMMSS
-            this.version = `1.0.${dateStr}.${timeStr}`;
-            this.updateVersionDisplay();
-            
-            console.log(`Sci-Searcher обновлен до версии ${this.version}`);
+        // Инициализация версии: берём последнюю версию из GitHub (меняется только при push)
+        async initVersion() {
+            try {
+                const cacheKey = 'sci_searcher_commit';
+                const cacheTimeKey = 'sci_searcher_commit_checked_at';
+                const cacheTtlMs = 5 * 60 * 1000; // 5 минут для снижения нагрузки на API
+
+                const now = Date.now();
+                const lastChecked = parseInt(localStorage.getItem(cacheTimeKey) || '0', 10);
+                const cached = localStorage.getItem(cacheKey);
+
+                // Если недавно проверяли — используем кешированную версию
+                if (cached && lastChecked && (now - lastChecked) < cacheTtlMs) {
+                    this.version = cached;
+                    this.updateVersionDisplay();
+                    return;
+                }
+
+                // Запрашиваем последний коммит основной ветки
+                const response = await fetch('https://api.github.com/repos/pavelaleks/Sci-searcher/commits/main', {
+                    headers: { 'Accept': 'application/vnd.github+json' }
+                });
+                if (!response.ok) throw new Error('GitHub API error: ' + response.status);
+                const data = await response.json();
+
+                const sha = (data && data.sha) ? String(data.sha) : '';
+                const shortSha = sha.substring(0, 7) || 'unknown';
+                const commitDateIso = data?.commit?.committer?.date || '';
+                const datePart = commitDateIso ? commitDateIso.slice(0, 10).replace(/-/g, '') : '';
+
+                // Формат версии: 1.0.<YYYYMMDD>-<shortsha>
+                const computedVersion = `1.0.${datePart}-${shortSha}`;
+
+                this.version = computedVersion;
+                this.updateVersionDisplay();
+
+                // Кешируем
+                localStorage.setItem(cacheKey, computedVersion);
+                localStorage.setItem(cacheTimeKey, String(now));
+
+                console.log(`Sci-Searcher версия по последнему коммиту: ${this.version}`);
+            } catch (e) {
+                // В случае ошибки оставляем последнюю известную версию
+                console.warn('Не удалось получить версию из GitHub, используется локальная:', e?.message || e);
+            }
         }
 
             init() {
                 console.log('🚀 Инициализация SciSearcher...');
-                this.updateVersion(); // Обновляем версию при каждой загрузке
+                this.initVersion(); // Версия меняется только при новом push в репозиторий
                 this.initTheme();
                 this.initForms();
                 this.initExportButtons();
